@@ -1,12 +1,12 @@
 @model Tuple<Order, List<Product>, List<int>, Dictionary<int, int>>
 
 @{
-  ViewData["Header"] = "Thanks For Your Order, We'll Deliver It In A Few Minutes";
+  ViewData["Header"] = "Cảm ơn bạn đã đặt món, chúng tôi sẽ phục vụ trong ít phút";
 }
 
 <div style="display: flex; width: 65%; justify-content: space-between; margin: 0 auto; font-size: 24px;">
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Customer Name</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Tên khách hàng</div>
 
     <div style="margin-bottom: 30px;">
       @Model.Item1.CustomerName
@@ -15,7 +15,7 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Table Number</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Số bàn</div>
 
     <div style="margin-bottom: 30px;">
       @Model.Item1.TableNo
@@ -24,7 +24,7 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Order Time</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Giờ đặt</div>
 
     <div style="margin-bottom: 30px;">
       @{
@@ -42,7 +42,7 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Products</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Món</div>
 
     <div style="margin-bottom: 30px; display: flex; flex-direction: column;">
       @{
@@ -56,7 +56,7 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Total Price</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Tổng tiền</div>
 
     <div style="margin-bottom: 30px;">
       $@Model.Item1.TotalPrice
@@ -64,7 +64,7 @@
   </div>
 
   <div style="text-align: center;">
-    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid; opacity: 0;">Update Order</div>
+    <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid; opacity: 0;">Cập nhật đơn</div>
 
     <div style="margin-bottom: 30px;">
       <a asp-controller="Order" asp-action="Edit" asp-route-id="@Model.Item1.OrderId" style="text-decoration: none;
@@ -74,7 +74,7 @@
                         padding: 10px 32px;
                         border-radius: 14px; margin-right: 15px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-        onmouseout="this.style.opacity=1">Edit</a>
+        onmouseout="this.style.opacity=1">Sửa</a>
       <a asp-controller="Order" asp-action="Delete" asp-route-id="@Model.Item1.OrderId" style="text-decoration: none;
                         color: #F8F8F8;
                         background-color: #b80f2b;
@@ -82,7 +82,7 @@
                         padding: 10px 13px;
                         border-radius: 14px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-        onmouseout="this.style.opacity=1">Delete</a>
+        onmouseout="this.style.opacity=1">Xóa</a>
     </div>
   </div>
 </div>

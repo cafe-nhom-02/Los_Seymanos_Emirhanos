@@ -2,7 +2,6 @@ using CafeApp.Data;
 using CafeApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 namespace CafeApp.Controllers
 {
 
@@ -98,17 +97,41 @@ namespace CafeApp.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? orderId, string searchString)
         {
+            // 1. Lấy danh sách sản phẩm từ DB
+            var productsQuery = _context.Products.AsQueryable();
 
-            List<Product> products = await _context.Products.ToListAsync();
-            Order order = new Order();
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-            var tuple = Tuple.Create(products, order);
+            // 2. Sử dụng ProductFilter để lọc nếu có từ khóa tìm kiếm
+            var productFilter = new CafeApp.Services.ProductFilter();
+            var allProducts = await productsQuery.ToListAsync();
+            var filteredProducts = productFilter.FilterByName(allProducts, searchString).ToList();
+
+            // 3. Giữ nguyên hoặc tạo mới Order để không bị mất giỏ hàng khi tìm kiếm
+            Order order;
+            if (orderId.HasValue)
+            {
+                order = await _context.Orders.FindAsync(orderId.Value);
+                if (order == null)
+                {
+                    order = new Order();
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                order = new Order();
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+            }
+
+            // Gửi từ khóa tìm kiếm ra ViewBag để giữ lại giá trị trên ô input ở giao diện
+            ViewBag.SearchString = searchString;
+
+            var tuple = Tuple.Create(filteredProducts, order);
             return View(tuple);
         }
-
         [HttpPost]
         public async Task<IActionResult> Create(int orderId, int tableNo, string customerName, decimal totalPrice)
         {

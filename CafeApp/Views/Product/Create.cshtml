@@ -1,8 +1,8 @@
 @model CafeApp.Models.Product
 
 @{
-    ViewBag.Title = "Create Product";
-    ViewData["Header"] = "Create New Product";
+    ViewBag.Title = "Thêm sản phẩm";
+    ViewData["Header"] = "Thêm sản phẩm mới";
 }
 <link rel="stylesheet" href="~/css/createProduct.css">
 
@@ -12,7 +12,7 @@
     @Html.AntiForgeryToken()
 
     <div style="display: flex; align-items: center; margin-bottom: 30px; justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Name">Name:</label>
+        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Name">Tên:</label>
         <input style="
         background-color: #2e292827;
         width: 13vw;
@@ -25,7 +25,7 @@
     </div>
 
     <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.ImageSrc">Image Source:</label>
+        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.ImageSrc">Đường dẫn ảnh:</label>
         <input style="
         background-color: #2e292827;
         width: 13vw;
@@ -39,7 +39,7 @@
     </div>
 
     <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Details">Details:</label>
+        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Details">Mô tả:</label>
         <input style="
         background-color: #2e292827;
         width: 13vw;
@@ -54,7 +54,7 @@
 
 
     <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Price">Price:</label>
+        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Price">Giá:</label>
         <input style="
         background-color: #2e292827;
         width: 13vw;
@@ -69,7 +69,7 @@
 
     <button style="width: 50%; margin: 0 auto; margin-top: 45px; border-radius: 14px; border: none; background-color: #b80f2b;
     color: #f8f8f8; padding: 12px; transition: all 0.3s;" type="submit" onmouseenter="this.style.opacity=0.8"
-        onmouseleave="this.style.opacity=1" type="submit">Create</button>
+        onmouseleave="this.style.opacity=1" type="submit">Tạo</button>
 </div>
 }
 <div style="height: 15vh;"></div>

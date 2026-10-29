@@ -1,12 +1,12 @@
 @{
     Layout = "_Layout2";
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Đăng nhập";
 }
 
 @model WebProject.Models.Barista;
 
 <div class="wrapper">
-    <h1 class="loginHeader">Please Provide Your Informations</h1>
+    <h1 class="loginHeader">Vui lòng nhập thông tin của bạn</h1>
 
 
     <div class="error-message">
@@ -14,9 +14,9 @@
     </div>
 
     <form method="post" class="loginForm" asp-controller="Barista" asp-action="Login">
-        <input class="loginInput email" type="email" placeholder="Email address" asp-for="Email" required>
-        <input class="loginInput password" type="password" placeholder="Password" asp-for="Password" required>
-        <button class="loginBtn" type="submit">Login</button>
+        <input class="loginInput email" type="email" placeholder="Địa chỉ email" asp-for="Email" required>
+        <input class="loginInput password" type="password" placeholder="Mật khẩu" asp-for="Password" required>
+        <button class="loginBtn" type="submit">Đăng nhập</button>
     </form>
 </div>
 

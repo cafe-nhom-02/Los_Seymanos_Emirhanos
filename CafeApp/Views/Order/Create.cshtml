@@ -1,7 +1,7 @@
 @model Tuple<List<Product>, Order>
 
 @{
-    ViewData["Header"] = "Enjoy Your Coffee!";
+    ViewData["Header"] = "Thưởng thức cà phê của bạn!";
 }
 
 <link rel="stylesheet" href="~/css/createProduct.css">
@@ -9,6 +9,31 @@
 
 <div class="Wrapper">
     <div class="productsContainer">
+        <!-- FORM TÌM KIẾM -->
+        <form asp-action="Create" method="get" class="mb-4" style="padding: 10px; width: 100%;">
+            <!-- Giữ lại orderId để không làm mất giỏ hàng khi người dùng bấm tìm kiếm -->
+            <input type="hidden" name="orderId" value="@Model.Item2.OrderId" />
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" name="searchString" value="@Context.Request.Query["searchString"]" 
+                       class="loginInput" placeholder="Tìm kiếm món theo tên..." style="flex: 1;" />
+                <button type="submit" class="orderButton" style="width: 120px; margin: 0;">Tìm kiếm</button>
+                
+                @if (!string.IsNullOrEmpty(Context.Request.Query["searchString"]))
+                {
+                    <a asp-action="Create" asp-route-orderId="@Model.Item2.OrderId" 
+                       class="orderButton" style="width: 90px; text-align: center; text-decoration: none; line-height: normal; background-color: #6c757d; display: flex; align-items: center; justify-content: center;">Đặt lại</a>
+                }
+            </div>
+        </form>
+
+        <!-- THÊM THÔNG BÁO NẾU KHÔNG TÌM THẤY KẾT QUẢ -->
+        @if (!Model.Item1.Any())
+        {
+            <div style="text-align: center; padding: 40px; font-size: 18px; color: #666; width: 100%;">
+                Không tìm thấy món ăn nào phù hợp với từ khóa của bạn!
+            </div>
+        }
         <div id="ProductsList">
             @{
                 foreach (var product in Model.Item1)
@@ -51,19 +76,19 @@
 
                 <div>
                     <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" required
-                        placeholder="Table Number">
+                        placeholder="Số bàn">
                 </div>
 
                 <div>
                     <input class="loginInput" asp-for="Item2.CustomerName" name="customerName" required
-                        placeholder="Customer Name">
+                        placeholder="Tên khách hàng">
                 </div>
 
                 <div>
                     <input asp-for="Item2.TotalPrice" type="hidden" id="totalPrice" name="totalPrice" value="0">
                 </div>
 
-                <button class="orderButton" type="submit">Order</button>
+                <button class="orderButton" type="submit">Đặt món</button>
             </form>
         </div>
         <br>
@@ -196,7 +221,7 @@
         var total = document.getElementById("total");
         var totalPrice = parseFloat(total.textContent.replace('$', '').trim());
         if (totalPrice == 0) {
-            alert("Please choose a product!");
+            alert("Vui lòng chọn món!");
             return false;
         }
         else {

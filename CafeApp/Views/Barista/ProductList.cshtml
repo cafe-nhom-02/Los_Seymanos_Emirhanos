@@ -1,7 +1,7 @@
 @model IEnumerable<CafeApp.Models.Product>
 
 @{
-    ViewData["Header"] = "Product List";
+    ViewData["Header"] = "Danh sách sản phẩm";
 }
 
 
@@ -12,9 +12,9 @@ display: flex; flex-direction: column; justify-content: space-between;
 width: 60%;">
     <thead style="margin-bottom: 30px;">
         <tr style="display: flex; justify-content: space-between; margin-right: 75px;">
-            <th>Image</th>
-            <th>Name</th>
-            <th>Actions</th>
+            <th>Hình ảnh</th>
+            <th>Tên</th>
+            <th>Thao tác</th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +34,7 @@ width: 60%;">
                         padding: 10px 32px;
                         border-radius: 14px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-                        onmouseout="this.style.opacity=1">Edit</a>
+                        onmouseout="this.style.opacity=1">Sửa</a>
 
                     <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.ProductId" style="text-decoration: none;
                         color: #F8F8F8;
@@ -43,7 +43,7 @@ width: 60%;">
                         padding: 10px 13px;
                         border-radius: 14px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-                        onmouseout="this.style.opacity=1">Delete</a>
+                        onmouseout="this.style.opacity=1">Xóa</a>
                 </td>
             </tr>
         }
@@ -52,4 +52,4 @@ width: 60%;">
 
 <a asp-action="Create" asp-controller="Product" style="margin: 0 auto; text-align: center; text-decoration: none; font-size: 18px; margin-top: 45px; margin-bottom: 60px; display: block;
 color: #f8f8f8; background-color: rgba(45,41,40,0.5); width: 15%; padding: 10px; border-radius: 14px;
-transition: all 0.3s;" onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Add New Product</a>
+transition: all 0.3s;" onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Thêm sản phẩm mới</a>

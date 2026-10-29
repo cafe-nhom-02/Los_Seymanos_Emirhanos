@@ -1,5 +1,6 @@
 using CafeApp.Data;
 using CafeApp.Models;
+using CafeApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebProject.Models;
@@ -43,7 +44,7 @@ namespace CafeApp.Controllers
                 }
                 else
                 {
-                    TempData["Error Message"] = "Invalid email or password!";
+                    TempData["Error Message"] = Messages.InvalidLogin;
                 }
             }
             return View();
@@ -81,7 +82,7 @@ namespace CafeApp.Controllers
                 }
                 else
                 {
-                    TempData["Error Message"] = "Barista is already added";
+                    TempData["Error Message"] = Messages.BaristaExists;
                 }
             }
             return View(barista);

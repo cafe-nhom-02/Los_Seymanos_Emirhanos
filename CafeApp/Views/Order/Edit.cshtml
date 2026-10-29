@@ -1,7 +1,7 @@
 @model Tuple<List<Product>, Order, Dictionary<int, int>>
 
 @{
-    ViewData["Header"] = "You Can Update Your Order";
+    ViewData["Header"] = "Bạn có thể cập nhật đơn hàng";
 }
 
 <link rel="stylesheet" href="~/css/createProduct.css">
@@ -52,13 +52,13 @@
                 </div>
 
                 <div>
-                    <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" required placeholder="Table Number"
+                    <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" required placeholder="Số bàn"
                         readonly>
                 </div>
 
                 <div>
                     <input class="loginInput" asp-for="Item2.CustomerName" name="customerName" required
-                        placeholder="Customer Name" readonly>
+                        placeholder="Tên khách hàng" readonly>
                 </div>
 
                 <div>
@@ -66,7 +66,7 @@
                         value="@Model.Item2.TotalPrice" readonly>
                 </div>
 
-                <button class="orderButton" type="submit">Update Order</button>
+                <button class="orderButton" type="submit">Cập nhật đơn hàng</button>
             </form>
         </div>
         <br>
@@ -202,7 +202,7 @@
         var total = document.getElementById("total");
         var totalPrice = parseFloat(total.textContent.replace('$', '').trim());
         if (totalPrice == 0) {
-            alert("Please choose a product!");
+            alert("Vui lòng chọn món!");
             return false;
         }
         else {

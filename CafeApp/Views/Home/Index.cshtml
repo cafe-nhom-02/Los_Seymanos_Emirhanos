@@ -1,20 +1,20 @@
 ﻿@{
-    ViewBag.Title = "Welcome";
+    ViewBag.Title = "Chào mừng";
     Layout = "_Layout2";
 }
 
 <div class="wrapper">
     <div class="left-intro">
-        <h1 class="welcomeHeader">Welcome to</h1>
+        <h1 class="welcomeHeader">Chào mừng đến với</h1>
         <img class="cup" src="/images/logo.png" alt="Logo">
     </div>
 
     <div class="right-intro">
-        <h2>Are you a customer or a barista?</h2>
+        <h2>Bạn là khách hàng hay barista?</h2>
 
         <div class="linkContainer">
             <a class="commonBtn managerBtn" asp-controller="Barista" asp-action="Login">Barista</a>
-            <a class="commonBtn customerBtn" asp-controller="Order" asp-action="Create">Customer</a>
+            <a class="commonBtn customerBtn" asp-controller="Order" asp-action="Create">Khách hàng</a>
         </div>
 
     </div>

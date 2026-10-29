@@ -1,7 +1,7 @@
 @model Tuple<Order, List<Product>, List<int>, Dictionary<int, int>>
 
 @{
-    ViewData["Header"] = "Order Details";
+    ViewData["Header"] = "Chi tiết đơn hàng";
 }
 
 
@@ -12,22 +12,22 @@ font-size: 24px;" asp-controller="Order" asp-action="UpdateOrderStatus" method="
 
     <div style="display: flex; width: 70%; justify-content: space-between; margin: 0 auto;">
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Table No</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Số bàn</div>
             <div>@Model.Item1.TableNo</div>
         </div>
 
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Customer Name</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Tên khách hàng</div>
             <div>@Model.Item1.CustomerName</div>
         </div>
 
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Order Date</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Ngày đặt</div>
             <div>@Model.Item1.OrderDate.ToString("hh:mm tt")</div>
         </div>
 
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Selected Products</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Món đã chọn</div>
             <ul>
                 @foreach (var product in Model.Item2)
                 {
@@ -39,13 +39,13 @@ font-size: 24px;" asp-controller="Order" asp-action="UpdateOrderStatus" method="
         </div>
 
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Is Served</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Đã phục vụ</div>
             <input style="width: 30px; height: 30px; cursor: pointer;" type="checkbox" name="IsServed" value="true"
             @(Model.Item1.IsServed ? "checked='checked'" : "") />
         </div>
 
         <div style="text-align: center;">
-            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Is Paid</div>
+            <div style="margin-bottom: 45px; font-weight: bold; border-bottom: 1px solid;">Đã thanh toán</div>
             <input style="width: 30px; height: 30px; cursor: pointer;" type="checkbox" name="IsPaid" value="true"
             @(Model.Item1.IsPaid ? "checked='checked'" : "") />
         </div>
@@ -54,6 +54,6 @@ font-size: 24px;" asp-controller="Order" asp-action="UpdateOrderStatus" method="
 
     <button style="width: 10%; margin: 0 auto; margin-top: 45px; border-radius: 14px; border: none; background-color: #b80f2b;
     color: #f8f8f8; padding: 9px; transition: all 0.3s;" type="submit" onmouseenter="this.style.opacity=0.8"
-        onmouseleave="this.style.opacity=1">Update</button>
+        onmouseleave="this.style.opacity=1">Cập nhật</button>
 </form>
 <div style="height: 15vh;"></div>

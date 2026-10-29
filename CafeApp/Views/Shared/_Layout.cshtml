@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8" />
@@ -37,10 +37,10 @@
                 {
                     <a style="text-decoration: none; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 22px;
                     border-radius: 14px; transition: all 0.3s;" asp-action="ProductList" asp-controller="Barista"
-                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Products</a>
+                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Sản phẩm</a>
                     <a style="text-decoration: none; margin-left: 30px; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 13px;
                     border-radius: 14px; transition: all 0.3s;" asp-action="Signup" asp-controller="Barista"
-                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Add Barista</a>
+                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Thêm Barista</a>
                 }
             </div>
 
@@ -64,7 +64,7 @@
 </html>
 
 <script>
-    @if (ViewBag.Title?.ToString() == "Add Barista")
+    @if (ViewBag.Title?.ToString() == "Thêm Barista")
     {
         @:var body = document.getElementById("body");
         @:var image = document.createElement("img");

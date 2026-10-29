@@ -1,14 +1,14 @@
 @model CafeApp.Models.Order
 
 @{
-    ViewData["Header"] = "Delete";
+    ViewData["Header"] = "Xóa";
 }
 
 
 <div
     style="display: flex; flex-direction: column; font-size: 24px; width: 100%; align-items: center; justify-content: center;">
     <h1 style="margin-bottom: 45px;">
-        Do you want to delete the @Model.CustomerName's order?
+        Bạn có muốn xóa đơn hàng của @Model.CustomerName không?
     </h1>
 
     <form asp-action="Delete" method="post">
@@ -22,7 +22,7 @@
                         border: none;
                         font-size: 24px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-            onmouseout="this.style.opacity=1">Yes</button>
+            onmouseout="this.style.opacity=1">Có</button>
         <a href="/Barista/OrderList"><button class="btn btn-primary" style="text-decoration: none;
                         color: #F8F8F8;
                         background-color: #2E2928;
@@ -31,7 +31,7 @@
                         font-size: 24px;
                         border-radius: 14px; margin-left: 15px;
                         transition: all 0.3s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
-                type="button">No</button></a>
+                type="button">Không</button></a>
     </form>
 </div>
 <div style="height: 15vh;"></div>

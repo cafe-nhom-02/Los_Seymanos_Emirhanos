@@ -1,8 +1,8 @@
 @model WebProject.Models.Barista
 
 @{
-    ViewData["Header"] = "Add Barista";
-    ViewBag.Title = "Add Barista";
+    ViewData["Header"] = "Thêm Barista";
+    ViewBag.Title = "Thêm Barista";
 }
 <link rel="stylesheet" href="~/css/signup.css">
 
@@ -20,10 +20,10 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input class="loginInput" asp-for="Password" type="password" placeholder="Password" required/>
+                <input class="loginInput" asp-for="Password" type="password" placeholder="Mật khẩu" required/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <button type="submit" class="loginBtn">Add</button>
+            <button type="submit" class="loginBtn">Thêm</button>
         </form>
     </div>
 </div>
