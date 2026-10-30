@@ -1,0 +1,59 @@
+@{
+    ViewBag.Title = "Giới thiệu";
+}
+
+<div class="container" style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+    <h1 style="font-family: 'Raleway', sans-serif;">Giới thiệu quán &amp; nhóm</h1>
+
+    <h2 style="font-family: 'Raleway', sans-serif; font-size: 28px; margin-top: 24px;">☕ Los Seymanos Emirhanos</h2>
+    <p>
+        Los Seymanos Emirhanos là một ứng dụng web ASP.NET Core MVC dành cho quán cà phê,
+        phục vụ cả hai phía: <strong>khách hàng</strong> (xem menu, đặt món, quản lý đơn của mình)
+        và <strong>barista</strong> (quản lý đơn hàng, menu và tình trạng phục vụ).
+        Tên nhóm được lấy cảm hứng từ bộ phim Breaking Bad — nơi hai thành viên Emirhan
+        và một thành viên Şeyma cùng hợp tác thực hiện dự án.
+    </p>
+
+    <h2 style="font-family: 'Raleway', sans-serif; font-size: 28px; margin-top: 24px;">👥 Thành viên &amp; vai trò</h2>
+    <table class="table table-striped" style="margin-top: 12px;">
+        <thead>
+            <tr>
+                <th>Thành viên</th>
+                <th>Vai trò</th>
+                <th>Phụ trách chính</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Trần Tuấn Hưng</td>
+                <td>Leader</td>
+                <td>Quy trình dự án, README, Việt hóa giao diện, báo cáo</td>
+            </tr>
+            <tr>
+                <td>Nguyễn Xuân Trường</td>
+                <td>Maintainer</td>
+                <td>Cấu hình repo, CI, CONTRIBUTING, giấy phép và phát hành</td>
+            </tr>
+            <tr>
+                <td>Trần Minh Đính</td>
+                <td>Contributor</td>
+                <td>Dự án test, trang Giới thiệu, chân trang</td>
+            </tr>
+            <tr>
+                <td>Nguyễn Thái Phú</td>
+                <td>Dev-core 1</td>
+                <td>Tìm kiếm món, kiểm tra form, thống kê đơn</td>
+            </tr>
+            <tr>
+                <td>Trần Dương Phong</td>
+                <td>Dev-core 2</td>
+                <td>Sắp xếp món, thông báo thành công, dọn dẹp mã</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="margin-top: 24px;">
+        <a class="commonBtn" style="text-decoration: none; color: inherit;"
+           asp-controller="Home" asp-action="Index">← Về trang chủ</a>
+    </p>
+</div>

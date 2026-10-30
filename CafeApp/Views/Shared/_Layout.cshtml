@@ -42,6 +42,12 @@
                     border-radius: 14px; transition: all 0.3s;" asp-action="Signup" asp-controller="Barista"
                         onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Thêm Barista</a>
                 }
+                else if (controller == "Home")
+                {
+                    <a style="text-decoration: none; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 22px;
+                    border-radius: 14px; transition: all 0.3s;" asp-action="About" asp-controller="Home"
+                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Giới thiệu</a>
+                }
             </div>
 
         </nav>
