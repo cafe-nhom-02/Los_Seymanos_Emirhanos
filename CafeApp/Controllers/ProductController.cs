@@ -24,7 +24,7 @@ namespace CafeApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Product/Create")]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,ImageSrc,Option,Type,Details,PriceTall,PriceGrande,PriceVenti,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,ImageSrc,Details,Price")] Product product)
         {
             if (ModelState.IsValid)
             {
