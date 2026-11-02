@@ -3,10 +3,14 @@
 @{
     ViewData["Header"] = "Danh sách sản phẩm";
 }
-
-
-
-
+@if (TempData["SuccessMessage"] != null)
+{
+    <div style="width: 60%; margin: 20px auto; padding: 15px;
+                background-color: #d4edda; color: #155724;
+                border-radius: 8px; text-align: center;">
+        @TempData["SuccessMessage"]
+    </div>
+}
 <table style="margin: 0 auto; margin-top: 45px; font-size: 24px;
 display: flex; flex-direction: column; justify-content: space-between;
 width: 60%;">
