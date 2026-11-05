@@ -138,10 +138,15 @@ namespace CafeApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int orderId, int tableNo, string customerName, decimal totalPrice)
         {
+            var (isValid, errorMessage) = CafeApp.Services.OrderValidator.ValidateOrderInput(tableNo, customerName);
+            if (!isValid)
+            {
+            return Json(new { success = false, message = errorMessage });
+            }
+            // ========================================================
 
             if (ModelState.IsValid)
             {
-
                 var order = await _context.Orders.FindAsync(orderId);
 
                 if (order != null)
@@ -153,7 +158,7 @@ namespace CafeApp.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false });
+                    return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
                 }
 
                 await _context.SaveChangesAsync();
@@ -164,7 +169,7 @@ namespace CafeApp.Controllers
             }
             else
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ!" });
             }
 
         }
