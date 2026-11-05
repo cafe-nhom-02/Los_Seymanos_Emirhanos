@@ -97,7 +97,7 @@ namespace CafeApp.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Create(int? orderId, string searchString)
+        public async Task<IActionResult> Create(int? orderId, string searchString, string sortOrder)
         {
             // 1. Lấy danh sách sản phẩm từ DB
             var productsQuery = _context.Products.AsQueryable();
@@ -106,6 +106,8 @@ namespace CafeApp.Controllers
             var productFilter = new CafeApp.Services.ProductFilter();
             var allProducts = await productsQuery.ToListAsync();
             var filteredProducts = productFilter.FilterByName(allProducts, searchString).ToList();
+            var productSorter = new CafeApp.Services.ProductSorter();
+            var sortedProducts = productSorter.Sort(filteredProducts, sortOrder);
 
             // 3. Giữ nguyên hoặc tạo mới Order để không bị mất giỏ hàng khi tìm kiếm
             Order order;
@@ -128,17 +130,23 @@ namespace CafeApp.Controllers
 
             // Gửi từ khóa tìm kiếm ra ViewBag để giữ lại giá trị trên ô input ở giao diện
             ViewBag.SearchString = searchString;
+            ViewBag.SortOrder = sortOrder;
 
-            var tuple = Tuple.Create(filteredProducts, order);
+            var tuple = Tuple.Create(sortedProducts, order);
             return View(tuple);
         }
         [HttpPost]
         public async Task<IActionResult> Create(int orderId, int tableNo, string customerName, decimal totalPrice)
         {
+            var (isValid, errorMessage) = CafeApp.Services.OrderValidator.ValidateOrderInput(tableNo, customerName);
+            if (!isValid)
+            {
+            return Json(new { success = false, message = errorMessage });
+            }
+            // ========================================================
 
             if (ModelState.IsValid)
             {
-
                 var order = await _context.Orders.FindAsync(orderId);
 
                 if (order != null)
@@ -150,7 +158,7 @@ namespace CafeApp.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false });
+                    return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
                 }
 
                 await _context.SaveChangesAsync();
@@ -161,7 +169,7 @@ namespace CafeApp.Controllers
             }
             else
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ!" });
             }
 
         }

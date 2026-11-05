@@ -1,3 +1,4 @@
+using CafeApp.Services;
 using CafeApp.Data;
 using CafeApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +25,13 @@ namespace CafeApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Product/Create")]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,ImageSrc,Option,Type,Details,PriceTall,PriceGrande,PriceVenti,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,ImageSrc,Details,Price")] Product product)
         {
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = Messages.ProductCreated;
                 return RedirectToAction("ProductList", "Barista");
             }
 
@@ -82,6 +84,7 @@ namespace CafeApp.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = Messages.ProductUpdated;
                 return RedirectToAction("ProductList", "Barista");
             }
             return View(product);
@@ -120,6 +123,7 @@ namespace CafeApp.Controllers
             {
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = Messages.ProductDeleted;
             }
             return RedirectToAction("ProductList", "Barista");
         }
