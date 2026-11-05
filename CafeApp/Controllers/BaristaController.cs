@@ -87,6 +87,15 @@ namespace CafeApp.Controllers
             }
             return View(barista);
         }
+        // HÀM RIÊNG TÍNH TỔNG SỐ ĐƠN VÀ DOANH THU
+        private (int totalOrders, decimal totalRevenue) CalculatePaidOrdersSummary(IEnumerable<Order> orders)
+        {
+            var paidOrders = orders.Where(o => o.IsPaid).ToList();
+            int totalCount = paidOrders.Count;
+            decimal totalSum = paidOrders.Sum(o => o.TotalPrice);
+            
+            return (totalCount, totalSum);
+        }
 
         //SHOW ORDERS
         [HttpGet]
@@ -102,6 +111,12 @@ namespace CafeApp.Controllers
             _context.ClearNullOrders();
 
             var orders = await _context.Orders.ToListAsync();
+            // Gọi hàm riêng để tính tổng số đơn và tổng tiền các đơn đã thanh toán
+            var (totalCount, totalRevenue) = CalculatePaidOrdersSummary(orders);
+
+            // Đẩy dữ liệu ra ViewBag bằng tiếng Việt có dấu
+            ViewBag.TotalPaidOrders = totalCount;
+            ViewBag.TotalRevenue = totalRevenue;
             return View(orders);
         }
 
