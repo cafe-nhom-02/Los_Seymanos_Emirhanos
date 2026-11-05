@@ -5,6 +5,18 @@
     ViewBag.Title = "Danh sách đơn hàng";
 }
 
+<!-- Phần hiển thị tổng số đơn và tổng tiền ở đầu trang (Tiếng Việt có dấu) -->
+<div style="display: flex; width: 55%; justify-content: space-around; margin: 0 auto 35px auto; padding: 15px; background-color: #fdfdfd; border: 1px solid #ddd; border-radius: 12px; font-family: 'Raleway', sans-serif;">
+    <div style="text-align: center;">
+        <div style="font-size: 16px; color: #555; margin-bottom: 5px;">Tổng đơn đã thanh toán</div>
+        <div style="font-size: 22px; font-weight: bold; color: #2E2928;">@ViewBag.TotalPaidOrders</div>
+    </div>
+    <div style="border-left: 1px solid #ccc;"></div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; color: #555; margin-bottom: 5px;">Tổng tiền doanh thu</div>
+        <div style="font-size: 22px; font-weight: bold; color: #b80f2b;">@string.Format("{0:N0}", ViewBag.TotalRevenue) VNĐ</div>
+    </div>
+</div>
 <div style="display: flex; width: 55%; justify-content: space-between; margin: 0 auto; font-size: 24px;">
 
     <div style="text-align: center;">
