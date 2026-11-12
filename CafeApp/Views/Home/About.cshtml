@@ -1,59 +1,99 @@
 @{
     ViewBag.Title = "Giới thiệu";
+    ViewData["Header"] = "Giới Thiệu Quán & Nhóm Phát Triển";
 }
 
-<div class="container" style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
-    <h1 style="font-family: 'Raleway', sans-serif;">Giới thiệu quán &amp; nhóm</h1>
+<div style="max-width: 960px; margin: 20px auto;">
+    <!-- Card Giới thiệu quán -->
+    <div class="modern-card" style="margin-bottom: 25px;">
+        <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+            <img src="~/images/logo.png" alt="Logo" style="width: 90px; height: 90px; border-radius: 20px; box-shadow: var(--shadow-soft);" />
+            <div style="flex: 1; min-width: 260px;">
+                <h2 style="font-size: 26px; margin: 0 0 6px 0; color: var(--primary-espresso);">☕ Quán Cà Phê Los Seymanos Emirhanos</h2>
+                <div style="color: var(--accent-caramel); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                    Hệ thống đặt món & Quản lý Barista thông minh
+                </div>
+            </div>
+        </div>
 
-    <h2 style="font-family: 'Raleway', sans-serif; font-size: 28px; margin-top: 24px;">☕ Los Seymanos Emirhanos</h2>
-    <p>
-        Los Seymanos Emirhanos là một ứng dụng web ASP.NET Core MVC dành cho quán cà phê,
-        phục vụ cả hai phía: <strong>khách hàng</strong> (xem menu, đặt món, quản lý đơn của mình)
-        và <strong>barista</strong> (quản lý đơn hàng, menu và tình trạng phục vụ).
-        Tên nhóm được lấy cảm hứng từ bộ phim Breaking Bad — nơi hai thành viên Emirhan
-        và một thành viên Şeyma cùng hợp tác thực hiện dự án.
-    </p>
+        <p style="margin-top: 18px; font-size: 15.5px; color: var(--text-secondary); line-height: 1.7;">
+            <strong>Los Seymanos Emirhanos</strong> là ứng dụng web hiện đại xây dựng trên nền tảng ASP.NET Core MVC, 
+            kết hợp hoàn hảo giữa trải nghiệm đặt món trực quan tại bàn cho <strong>khách hàng</strong> và hệ thống điều hành pha chế, 
+            quản trị thực đơn thông minh cho <strong>Barista</strong>. Tên thương hiệu được lấy cảm hứng sáng tạo từ sự kết hợp đặc biệt 
+            của những người sáng lập dự án.
+        </p>
+    </div>
 
-    <h2 style="font-family: 'Raleway', sans-serif; font-size: 28px; margin-top: 24px;">👥 Thành viên &amp; vai trò</h2>
-    <table class="table table-striped" style="margin-top: 12px;">
-        <thead>
-            <tr>
-                <th>Thành viên</th>
-                <th>Vai trò</th>
-                <th>Phụ trách chính</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Trần Tuấn Hưng</td>
-                <td>Leader</td>
-                <td>Quy trình dự án, README, Việt hóa giao diện, báo cáo</td>
-            </tr>
-            <tr>
-                <td>Nguyễn Xuân Trường</td>
-                <td>Maintainer</td>
-                <td>Cấu hình repo, CI, CONTRIBUTING, giấy phép và phát hành</td>
-            </tr>
-            <tr>
-                <td>Trần Minh Đính</td>
-                <td>Contributor</td>
-                <td>Dự án test, trang Giới thiệu, chân trang</td>
-            </tr>
-            <tr>
-                <td>Nguyễn Thái Phú</td>
-                <td>Dev-core 1</td>
-                <td>Tìm kiếm món, kiểm tra form, thống kê đơn</td>
-            </tr>
-            <tr>
-                <td>Trần Dương Phong</td>
-                <td>Dev-core 2</td>
-                <td>Sắp xếp món, thông báo thành công, dọn dẹp mã</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Card Thành viên nhóm -->
+    <div class="modern-card" style="padding: 0; overflow: hidden; margin-bottom: 25px;">
+        <div style="padding: 20px 28px; border-bottom: 1px solid var(--border-color);">
+            <h3 style="font-size: 20px; margin: 0; color: var(--primary-espresso);">👥 Thành Viên & Vai Trò Dự Án (Nhóm 02)</h3>
+            <p style="margin: 4px 0 0 0; font-size: 13.5px; color: var(--text-secondary);">Đội ngũ phát triển và duy trì hệ thống ứng dụng</p>
+        </div>
 
-    <p style="margin-top: 24px;">
-        <a class="commonBtn" style="text-decoration: none; color: inherit;"
-           asp-controller="Home" asp-action="Index">← Về trang chủ</a>
-    </p>
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th style="width: 220px;">Thành viên</th>
+                        <th style="width: 150px; text-align: center;">Vai trò</th>
+                        <th>Phụ trách chính</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--primary-mocha); font-size: 15px;">Trần Tuấn Hưng</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge-custom badge-danger">Leader</span>
+                        </td>
+                        <td style="color: var(--text-secondary);">Quy trình dự án, README, Việt hóa toàn diện giao diện, báo cáo</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--primary-mocha); font-size: 15px;">Nguyễn Xuân Trường</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge-custom badge-warning">Maintainer</span>
+                        </td>
+                        <td style="color: var(--text-secondary);">Cấu hình repo, CI, CONTRIBUTING, giấy phép và phát hành</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--primary-mocha); font-size: 15px;">Trần Minh Đính</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge-custom badge-info">Contributor</span>
+                        </td>
+                        <td style="color: var(--text-secondary);">Dự án test, trang Giới thiệu, hoàn thiện chân trang</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--primary-mocha); font-size: 15px;">Nguyễn Thái Phú</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge-custom badge-success">Dev-core 1</span>
+                        </td>
+                        <td style="color: var(--text-secondary);">Tìm kiếm món, kiểm tra biểu mẫu (Validation), thống kê doanh thu</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--primary-mocha); font-size: 15px;">Trần Dương Phong</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="badge-custom badge-success">Dev-core 2</span>
+                        </td>
+                        <td style="color: var(--text-secondary);">Sắp xếp món, hệ thống thông báo thành công, dọn dẹp mã nguồn</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <a class="btn-coffee-secondary" asp-controller="Home" asp-action="Index">
+            ← Quay về Trang chủ
+        </a>
+    </div>
 </div>

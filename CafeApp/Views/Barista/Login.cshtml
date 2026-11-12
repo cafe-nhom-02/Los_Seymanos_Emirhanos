@@ -1,33 +1,46 @@
+@model WebProject.Models.Barista
 @{
     Layout = "_Layout2";
-    ViewBag.Title = "Đăng nhập";
+    ViewBag.Title = "Đăng nhập Barista";
 }
 
-@model WebProject.Models.Barista;
-
-<div class="wrapper">
-    <h1 class="loginHeader">Vui lòng nhập thông tin của bạn</h1>
-
-
-    <div class="error-message">
-        <div id="errorMessage">@TempData["Error Message"]</div>
+<div class="login-card">
+    <div class="login-header-section">
+        <a asp-controller="Home" asp-action="Index">
+            <img src="~/images/logo.png" alt="Logo" class="login-brand-logo" />
+        </a>
+        <h2 class="login-title">Đăng nhập Barista</h2>
+        <p class="login-subtitle">Vui lòng nhập thông tin để truy cập hệ thống quản trị</p>
     </div>
 
-    <form method="post" class="loginForm" asp-controller="Barista" asp-action="Login">
-        <input class="loginInput email" type="email" placeholder="Địa chỉ email" asp-for="Email" required>
-        <input class="loginInput password" type="password" placeholder="Mật khẩu" asp-for="Password" required>
-        <button class="loginBtn" type="submit">Đăng nhập</button>
+    <form method="post" asp-controller="Barista" asp-action="Login">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-error mb-3"></div>
+
+        <div class="form-group-login">
+            <label asp-for="Email">Địa chỉ Email</label>
+            <input class="login-input" type="email" placeholder="barista@gmail.com" asp-for="Email" required autofocus />
+            <span asp-validation-for="Email" class="validation-error"></span>
+        </div>
+
+        <div class="form-group-login">
+            <label asp-for="Password">Mật khẩu</label>
+            <input class="login-input" type="password" placeholder="••••••••" asp-for="Password" required />
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+
+        <button class="btn-login-submit" type="submit">
+            <span>🔑</span> Đăng nhập
+        </button>
     </form>
+
+    <div>
+        <a class="login-back-link" asp-controller="Home" asp-action="Index">
+            ← Quay lại Trang chủ
+        </a>
+    </div>
 </div>
 
-<script>
-    setTimeout(function () {
-        var errorMessage = document.getElementById("errorMessage");
-
-        if (errorMessage) {
-            setTimeout(function () {
-                errorMessage.style.opacity = '0';
-            }, 1000);
-        }
-    }, 5000);
-</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
