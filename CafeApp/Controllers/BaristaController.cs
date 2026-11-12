@@ -4,6 +4,7 @@ using CafeApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebProject.Models;
+
 namespace CafeApp.Controllers
 {
     public class BaristaController : Controller
@@ -14,9 +15,8 @@ namespace CafeApp.Controllers
             _context = cont;
         }
 
-
-        //ADMİN LOGIN
-
+        // BARISTA LOGIN
+        [HttpGet]
         public IActionResult Login()
         {
             var isAuthenticated = HttpContext.Session.GetString("IsAuth");
@@ -30,28 +30,46 @@ namespace CafeApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(Barista model)
         {
-            if (model.Email != null)
+            if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {
-                var barista = _context.FindByEmail(model.Email);
-
-                if (barista != null && barista.Password == model.Password)
-                {
-                    barista.IsAuthenticated = true;
-                    HttpContext.Session.SetString("IsAuth", barista.IsAuthenticated.ToString());
-                    return RedirectToAction("OrderList");
-                }
-                else
-                {
-                    TempData["Error Message"] = Messages.InvalidLogin;
-                }
+                TempData["ErrorMessage"] = "Vui lòng nhập đầy đủ Email và Mật khẩu!";
+                TempData["Error Message"] = "Vui lòng nhập đầy đủ Email và Mật khẩu!";
+                return View(model);
             }
-            return View();
+
+            var barista = _context.FindByEmail(model.Email);
+
+            if (barista != null && barista.Password == model.Password)
+            {
+                barista.IsAuthenticated = true;
+                HttpContext.Session.SetString("IsAuth", "True");
+                TempData["SuccessMessage"] = Messages.LoginSuccess;
+                return RedirectToAction("OrderList");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = Messages.InvalidLogin;
+                TempData["Error Message"] = Messages.InvalidLogin;
+            }
+
+            return View(model);
         }
 
-        //create new admin
+        // BARISTA LOGOUT
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("IsAuth");
+            HttpContext.Session.Clear();
+            TempData["SuccessMessage"] = Messages.LogoutSuccess;
+            return RedirectToAction("Login");
+        }
 
+        // CREATE NEW BARISTA
+        [HttpGet]
         public IActionResult Signup()
         {
             var isAuthenticated = HttpContext.Session.GetString("IsAuth");
@@ -68,25 +86,32 @@ namespace CafeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Signup([Bind("Email,Password")] Barista barista)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login");
+            }
+
             if (ModelState.IsValid)
             {
-                var Barista = _context.FindByEmail(barista.Email!);
+                var existingBarista = _context.FindByEmail(barista.Email!);
 
-                if (Barista == null)
+                if (existingBarista == null)
                 {
                     _context.Add(barista);
                     await _context.SaveChangesAsync();
-                    HttpContext.Session.SetString("IsAuth", "false");
-                    return RedirectToAction(nameof(Login));
-
+                    TempData["SuccessMessage"] = Messages.BaristaCreated;
+                    return RedirectToAction(nameof(OrderList));
                 }
                 else
                 {
+                    TempData["ErrorMessage"] = Messages.BaristaExists;
                     TempData["Error Message"] = Messages.BaristaExists;
                 }
             }
             return View(barista);
         }
+
         // HÀM RIÊNG TÍNH TỔNG SỐ ĐƠN VÀ DOANH THU
         private (int totalOrders, decimal totalRevenue) CalculatePaidOrdersSummary(IEnumerable<Order> orders)
         {
@@ -97,7 +122,7 @@ namespace CafeApp.Controllers
             return (totalCount, totalSum);
         }
 
-        //SHOW ORDERS
+        // SHOW ORDERS
         [HttpGet]
         public async Task<IActionResult> OrderList()
         {
@@ -110,11 +135,9 @@ namespace CafeApp.Controllers
 
             _context.ClearNullOrders();
 
-            var orders = await _context.Orders.ToListAsync();
-            // Gọi hàm riêng để tính tổng số đơn và tổng tiền các đơn đã thanh toán
+            var orders = await _context.Orders.OrderByDescending(o => o.OrderId).ToListAsync();
             var (totalCount, totalRevenue) = CalculatePaidOrdersSummary(orders);
 
-            // Đẩy dữ liệu ra ViewBag bằng tiếng Việt có dấu
             ViewBag.TotalPaidOrders = totalCount;
             ViewBag.TotalRevenue = totalRevenue;
             return View(orders);
@@ -130,17 +153,27 @@ namespace CafeApp.Controllers
                 return RedirectToAction("Login");
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            List<OrderProduct> orderProducts = _context.OrderProducts
-            .Where(op => op.OrderId == id)
-            .ToList();
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = Messages.OrderNotFound;
+                return RedirectToAction("OrderList");
+            }
+
+            List<OrderProduct> orderProducts = await _context.OrderProducts
+                .Where(op => op.OrderId == id)
+                .ToListAsync();
 
             List<int> productIds = orderProducts.Select(op => op.ProductId).ToList();
 
-            List<Product> products = _context.Products
+            List<Product> products = await _context.Products
                 .Where(p => productIds.Contains(p.ProductId))
-                .ToList();
+                .ToListAsync();
 
             Dictionary<int, int> productIdQuantityPairs = orderProducts
                 .ToDictionary(op => op.ProductId, op => op.Quantity);
@@ -167,23 +200,49 @@ namespace CafeApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = Messages.OrderNotFound;
+                return RedirectToAction("OrderList");
+            }
+
             return View(order);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete([FromForm] int orderId)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login");
+            }
+
             List<OrderProduct> orderProducts = await _context.OrderProducts
-            .Where(op => op.OrderId == orderId)
-            .ToListAsync();
+                .Where(op => op.OrderId == orderId)
+                .ToListAsync();
             _context.OrderProducts.RemoveRange(orderProducts);
 
             var order = await _context.Orders.FindAsync(orderId);
             if (order != null)
+            {
                 _context.Orders.Remove(order);
-
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = Messages.OrderDeleted;
+            }
 
             return RedirectToAction("OrderList", "Barista");
         }

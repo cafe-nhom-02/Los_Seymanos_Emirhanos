@@ -1,162 +1,141 @@
 @model Tuple<List<Product>, Order>
 
 @{
-    ViewData["Header"] = "Thưởng thức cà phê của bạn!";
+    ViewData["Header"] = "Thưởng Thức Cà Phê Của Bạn";
+    ViewBag.Title = "Thực đơn & Đặt món";
 }
 
-<link rel="stylesheet" href="~/css/createProduct.css">
+<link rel="stylesheet" href="~/css/createProduct.css" asp-append-version="true">
 
-<form asp-action="Create" method="get" class="mb-4" style="padding: 10px; width: 100%;">
-    <input type="hidden" name="orderId" value="@Model.Item2.OrderId" />
-<div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+<!-- Thanh Tìm Kiếm & Bộ Lọc Nâng Cao -->
+<div class="modern-card" style="padding: 16px 24px; margin-bottom: 25px;">
+    <form asp-action="Create" method="get" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
+        <input type="hidden" name="orderId" value="@Model.Item2.OrderId" />
 
-    <!-- Tìm kiếm -->
-    <input type="text"
-           name="searchString"
-           value="@Context.Request.Query["searchString"]"
-           class="loginInput"
-           placeholder="Tìm kiếm món theo tên..."
-           style="flex: 1; min-width: 200px;" />
+        <!-- Ô Tìm kiếm -->
+        <div style="flex: 1; min-width: 220px; position: relative;">
+            <input type="text"
+                   name="searchString"
+                   value="@ViewBag.SearchString"
+                   class="loginInput"
+                   placeholder="🔍 Tìm kiếm món cà phê, đồ uống, bánh..."
+                   style="padding-left: 14px;" />
+        </div>
 
-    <!-- Sắp xếp -->
-    <select name="sortOrder"
-            class="loginInput"
-            style="width: 170px;"
-            onchange="this.form.submit()">
+        <!-- Bộ lọc sắp xếp -->
+        <div style="width: 180px;">
+            <select name="sortOrder"
+                    class="loginInput"
+                    style="cursor: pointer;"
+                    onchange="this.form.submit()">
+                <option value="">-- Sắp xếp --</option>
+                <option value="price_asc" selected="@(ViewBag.SortOrder == "price_asc")">Giá tăng dần</option>
+                <option value="price_desc" selected="@(ViewBag.SortOrder == "price_desc")">Giá giảm dần</option>
+                <option value="name_asc" selected="@(ViewBag.SortOrder == "name_asc")">Tên món A-Z</option>
+            </select>
+        </div>
 
-        <option value="">-- Sắp xếp --</option>
+        <!-- Nút Tìm kiếm -->
+        <button type="submit" class="btn-coffee-primary" style="padding: 10px 20px;">
+            Tìm kiếm
+        </button>
 
-        <option value="price_asc"
-                selected="@(ViewBag.SortOrder == "price_asc")">
-            Giá tăng
-        </option>
-
-        <option value="price_desc"
-                selected="@(ViewBag.SortOrder == "price_desc")">
-            Giá giảm
-        </option>
-
-        <option value="name_asc"
-                selected="@(ViewBag.SortOrder == "name_asc")">
-            Tên A-Z
-        </option>
-
-    </select>
-
-    <!-- Nút tìm kiếm -->
-    <button type="submit"
-            class="orderButton"
-            style="width: 120px; margin: 0;">
-        Tìm kiếm
-    </button>
-
-    <!-- Đặt lại -->
-    @if (!string.IsNullOrEmpty(Context.Request.Query["searchString"])
-        || !string.IsNullOrEmpty(Context.Request.Query["sortOrder"]))
-    {
-        <a asp-action="Create"
-           asp-route-orderId="@Model.Item2.OrderId"
-           class="orderButton"
-           style="width: 90px; text-align: center; text-decoration: none; line-height: normal; background-color: #6c757d; display: flex; align-items: center; justify-content: center;">
-            Đặt lại
-        </a>
-    }
-
+        <!-- Nút Đặt lại khi có filter -->
+        @if (!string.IsNullOrEmpty(ViewBag.SearchString as string) || !string.IsNullOrEmpty(ViewBag.SortOrder as string))
+        {
+            <a asp-action="Create" asp-route-orderId="@Model.Item2.OrderId" class="btn-coffee-secondary" style="padding: 10px 18px;">
+                <span>✕</span> Đặt lại
+            </a>
+        }
+    </form>
 </div>
-</form>
+
 <div class="Wrapper">
+    <!-- Cột Trái: Lưới Sản Phẩm -->
     <div class="productsContainer">
-        <!-- THÊM THÔNG BÁO NẾU KHÔNG TÌM THẤY KẾT QUẢ -->
         @if (!Model.Item1.Any())
         {
-            <div style="text-align: center; padding: 40px; font-size: 18px; color: #666; width: 100%;">
-                Không tìm thấy món ăn nào phù hợp với từ khóa của bạn!
+            <div class="modern-card" style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 48px; margin-bottom: 14px;">🔍</div>
+                <h3 style="font-size: 20px; color: var(--text-secondary); margin-bottom: 6px;">Không tìm thấy món ăn phù hợp</h3>
+                <p style="color: var(--text-muted); font-size: 14px;">Hãy thử tìm kiếm với từ khóa khác hoặc bấm "Đặt lại" để xem toàn bộ thực đơn.</p>
             </div>
         }
-        <div id="ProductsList">
-            @{
-                foreach (var product in Model.Item1)
+        else
+        {
+            <div id="ProductsList">
+                @foreach (var product in Model.Item1)
                 {
-                    <div id="product" class="product" style="background-image: url('@(Url.Content(product.ImageSrc))');">
+                    <div id="product_@product.ProductId" class="product" style="background-image: url('@(Url.Content(product.ImageSrc ?? "~/images/logo.png"))');">
                         <div class="productInfo">
                             <p>@product.Name</p>
-                            <div style="position: relative;">
-                                <p style="z-index: 4; position: relative;" class="pricep">$ @product.Price</p>
-                                <div
-                                    style="background-image: url(../images/price.svg); width: 130px; height: 100px; position: absolute;
-                                                                                                            top: 45px; left: -100px; rotate: 230deg; transform-origin: top; background-repeat: no-repeat; background-position: center;
-                                                                                                            background-size: cover;">
-                                </div>
-                            </div>
+                            <p class="pricep">$ @product.Price</p>
                         </div>
                         <div class="filter"></div>
                         <div class="controlBag">
-                            <button
-                                onclick="addToBag(@product.ProductId, @Model.Item2.OrderId, '@product.Name', @product.Price);"
-                                class="bagButton" disabled>+</button>
-                            <input id="quantityInput_@product.ProductId" value="0" type="number" readonly>
-                            <button
-                                onclick="removeFromBag(@product.ProductId, @Model.Item2.OrderId, '@product.Name', @product.Price);"
-                                class="bagButton" disabled>-</button>
+                            <button type="button"
+                                    onclick="removeFromBag(@product.ProductId, @Model.Item2.OrderId, '@Html.Raw(product.Name)', @product.Price);"
+                                    class="bagButton" disabled title="Giảm số lượng">-</button>
+                            <input id="quantityInput_@product.ProductId" value="0" type="number" readonly />
+                            <button type="button"
+                                    onclick="addToBag(@product.ProductId, @Model.Item2.OrderId, '@Html.Raw(product.Name)', @product.Price);"
+                                    class="bagButton" disabled title="Tăng số lượng">+</button>
                         </div>
                     </div>
                 }
-            }
-        </div>
-
+            </div>
+        }
     </div>
 
+    <!-- Cột Phải: Form Thông Tin & Hóa Đơn -->
     <div class="right">
         <div id="OrderForm">
-            <form class="form" asp-controller="Order" asp-action="Create" method="post" onsubmit="return check()">
-                <div>
-                    <input asp-for="Item2.OrderId" type="hidden" name="orderId" value="@Model.Item2.OrderId">
+            <h3>Thông Tin Đặt Bàn</h3>
+            
+            <div id="orderValidationError" class="validation-error mb-3" style="display: none; padding: 10px; background: #FEE2E2; border-radius: 8px; border: 1px solid #FECACA;"></div>
+
+            <form class="form" asp-controller="Order" asp-action="Create" method="post" onsubmit="return checkOrderForm()">
+                @Html.AntiForgeryToken()
+                <input asp-for="Item2.OrderId" type="hidden" name="orderId" value="@Model.Item2.OrderId" />
+                <input asp-for="Item2.TotalPrice" type="hidden" id="totalPrice" name="totalPrice" value="0" />
+
+                <div class="form-group-order">
+                    <label for="tableNo">Số bàn của bạn *</label>
+                    <input class="loginInput" id="tableNo" name="tableNo" type="number" min="1" required placeholder="Nhập số bàn (ví dụ: 5)" />
                 </div>
 
-                <div>
-                    <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" required
-                        placeholder="Số bàn">
+                <div class="form-group-order">
+                    <label for="customerName">Tên quý khách *</label>
+                    <input class="loginInput" id="customerName" name="customerName" type="text" maxlength="50" required placeholder="Nhập họ tên quý khách" />
                 </div>
 
-                <div>
-                    <input class="loginInput" asp-for="Item2.CustomerName" name="customerName" required
-                        placeholder="Tên khách hàng">
-                </div>
-
-                <div>
-                    <input asp-for="Item2.TotalPrice" type="hidden" id="totalPrice" name="totalPrice" value="0">
-                </div>
-
-                <button class="orderButton" type="submit">Đặt món</button>
+                <button class="orderButton" type="submit" style="margin-top: 14px;">
+                    <span>☕</span> Xác Nhận Đặt Món
+                </button>
             </form>
         </div>
-        <br>
-        <br>
+
         @await Html.PartialAsync("../Shared/_OrderDetails")
     </div>
 </div>
 
-
 <script>
+    // Bật các nút thêm món sau khi trang sẵn sàng
     setTimeout(function () {
         document.querySelectorAll('.bagButton').forEach(b => b.removeAttribute('disabled'));
-    }, 2000);
+    }, 500);
 
     function UpdateDBBefore() {
         $.ajax({
             type: "POST",
             url: "/Order/UpdateDBBefore",
             data: { orderId: @Model.Item2.OrderId },
-            success: function (response) {
-            },
-            error: function (error) {
-            }
+            success: function () { },
+            error: function () { }
         });
     }
 
-    window.onunload = UpdateDBBefore;
     window.addEventListener('beforeunload', UpdateDBBefore);
-
 
     function addToBag(productId, orderId, productName, productPrice) {
         $.ajax({
@@ -164,11 +143,11 @@
             url: "/Order/AddToBag",
             data: { productId: productId, orderId: orderId },
             success: function (response) {
-                printOrderDetails(productName, productPrice, response.quantity, productId)
+                printOrderDetails(productName, productPrice, response.quantity, productId);
                 updateQuantityInput(productId, response.quantity);
+                hideEmptyBagNotice();
             },
-            error: function (error) {
-            }
+            error: function () { }
         });
     }
 
@@ -181,8 +160,7 @@
                 printOrderDetails(productName, productPrice, response.quantity, productId);
                 updateQuantityInput(productId, response.quantity);
             },
-            error: function (error) {
-            }
+            error: function () { }
         });
     }
 
@@ -195,10 +173,22 @@
 
     var addedProducts = [];
 
-    function printOrderDetails(name, price, quantity, productId) {
-        var table = document.querySelector("#tbl");
+    function hideEmptyBagNotice() {
+        var notice = document.getElementById("emptyBagNotice");
+        if (notice) notice.style.display = "none";
+    }
 
-        if (!addedProducts.includes(name) && quantity != 0) {
+    function showEmptyBagNoticeIfNeeded() {
+        var notice = document.getElementById("emptyBagNotice");
+        if (notice && addedProducts.length === 0) {
+            notice.style.display = "block";
+        }
+    }
+
+    function printOrderDetails(name, price, quantity, productId) {
+        var table = document.querySelector("#tbl tbody") || document.querySelector("#tbl");
+
+        if (!addedProducts.includes(name) && quantity > 0) {
             var tableRow = document.createElement("tr");
             tableRow.id = productId * 100;
             tableRow.classList.add("addedRow");
@@ -207,15 +197,15 @@
             nameElement.textContent = name;
             nameElement.classList.add("nameElement");
 
-            var priceElement = document.createElement("td");
-            priceElement.id = `${productId * 10}`;
-            priceElement.classList.add("price");
-            priceElement.textContent = `$ ${price}`;
-
             var quantityElement = document.createElement("td");
             quantityElement.id = `${productId}`;
             quantityElement.textContent = quantity + "x";
             quantityElement.classList.add("quantityElement");
+
+            var priceElement = document.createElement("td");
+            priceElement.id = `${productId * 10}`;
+            priceElement.classList.add("price");
+            priceElement.textContent = `$ ${price * quantity}`;
 
             tableRow.appendChild(nameElement);
             tableRow.appendChild(quantityElement);
@@ -224,49 +214,89 @@
 
             addedProducts.push(name);
         }
-        else {
+        else if (quantity > 0) {
             var quantityElement = document.getElementById(`${productId}`);
             var priceElement = document.getElementById(`${productId * 10}`);
 
-            quantityElement.textContent = quantity + "x";
-            priceElement.textContent = `$ ${price * quantity}`;
+            if (quantityElement) quantityElement.textContent = quantity + "x";
+            if (priceElement) priceElement.textContent = `$ ${price * quantity}`;
+        }
+        else if (quantity <= 0) {
+            var tableRow = document.getElementById(productId * 100);
+            if (tableRow) tableRow.remove();
+
+            var index = addedProducts.indexOf(name);
+            if (index !== -1) {
+                addedProducts.splice(index, 1);
+            }
         }
 
+        // Tính tổng tiền
         var total = document.getElementById("total");
         var allPrices = document.querySelectorAll(".price");
         var totalPrice = 0;
 
         allPrices.forEach(priceElement => {
-            var price = parseInt(priceElement.textContent.substring(2));
-
-            totalPrice += price;
-
-            if (price == 0) {
-                var tableRow = document.getElementById(`${productId}` * 100);
-                tableRow.remove();
-
-                var index = addedProducts.indexOf(name);
-
-                if (index !== -1) {
-                    addedProducts.splice(index, 1);
-                }
+            var text = priceElement.textContent.replace('$', '').trim();
+            var p = parseFloat(text);
+            if (!isNaN(p)) {
+                totalPrice += p;
             }
-        })
+        });
 
-        total.textContent = `$ ${totalPrice}`;
+        if (total) total.textContent = `$ ${totalPrice}`;
+        showEmptyBagNoticeIfNeeded();
     }
 
-    function check() {
+    function checkOrderForm() {
         var total = document.getElementById("total");
-        var totalPrice = parseFloat(total.textContent.replace('$', '').trim());
-        if (totalPrice == 0) {
-            alert("Vui lòng chọn món!");
+        var errorBox = document.getElementById("orderValidationError");
+        var tableNoInput = document.getElementById("tableNo");
+        var customerNameInput = document.getElementById("customerName");
+
+        var totalPrice = parseFloat(total.textContent.replace('$', '').trim()) || 0;
+
+        if (totalPrice <= 0 || addedProducts.length === 0) {
+            if (errorBox) {
+                errorBox.textContent = "⚠️ Vui lòng chọn ít nhất một món trước khi đặt hàng!";
+                errorBox.style.display = "block";
+            }
+            alert("Vui lòng chọn ít nhất một món trước khi đặt hàng!");
             return false;
         }
-        else {
-            document.getElementById("totalPrice").setAttribute("value", totalPrice);
-            window.removeEventListener('beforeunload', UpdateDBBefore);
-            return true;
+
+        var tableNo = parseInt(tableNoInput.value);
+        if (isNaN(tableNo) || tableNo <= 0) {
+            if (errorBox) {
+                errorBox.textContent = "⚠️ Số bàn phải lớn hơn 0!";
+                errorBox.style.display = "block";
+            }
+            tableNoInput.focus();
+            return false;
         }
+
+        var customerName = (customerNameInput.value || "").trim();
+        if (customerName.length === 0) {
+            if (errorBox) {
+                errorBox.textContent = "⚠️ Tên khách hàng không được để trống!";
+                errorBox.style.display = "block";
+            }
+            customerNameInput.focus();
+            return false;
+        }
+
+        if (customerName.length > 50) {
+            if (errorBox) {
+                errorBox.textContent = "⚠️ Tên khách hàng không được vượt quá 50 ký tự!";
+                errorBox.style.display = "block";
+            }
+            customerNameInput.focus();
+            return false;
+        }
+
+        if (errorBox) errorBox.style.display = "none";
+        document.getElementById("totalPrice").value = totalPrice;
+        window.removeEventListener('beforeunload', UpdateDBBefore);
+        return true;
     }
 </script>

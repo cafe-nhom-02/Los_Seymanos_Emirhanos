@@ -1,69 +1,108 @@
-﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Http
+@{
+    var isAuth = Context.Session.GetString("IsAuth") == "True";
+    string currentPath = ViewContext.HttpContext.Request.Path.Value ?? "";
+}
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - LOS SEYMANOS EMIRHANOS</title>
+    <title>@(ViewBag.Title ?? ViewData["Header"] ?? "Los Seymanos Emirhanos") - LOS SEYMANOS EMIRHANOS</title>
     <link rel="icon" href="~/images/title_bar_icon.png" type="image/png">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
 </head>
 
 <body id="body">
-    <header>
-        <nav style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 82%;">
-                @{
-                    string currentPath = ViewContext.HttpContext.Request.Path;
-                    string controller = currentPath.Contains("Barista") || currentPath.Contains("Product") ? "Barista" :
-                    "Home";
-                    string action = currentPath.Contains("Barista") || currentPath.Contains("Product") ? "OrderList" :
-                    "Index";
-                }
-                <a asp-controller="@controller" asp-action="@action"><img src="/images/logo.png" alt="Logo"
-                        width="100px" height="100px" class="logo"></a>
+    <header class="modern-header-wrapper">
+        <nav class="modern-navbar">
+            <a class="brand-section" asp-controller="@(isAuth ? "Barista" : "Home")" asp-action="@(isAuth ? "OrderList" : "Index")">
+                <img src="~/images/logo.png" alt="Logo" class="brand-logo" />
+                <div class="brand-text">
+                    <h1>Los Seymanos</h1>
+                    <p>Emirhanos Coffee</p>
+                </div>
+            </a>
 
-                <h2 style="font-family:'Raleway',sans-serif; font-size: 48px; margin-left: 150px;">@ViewData["Header"]
-                </h2>
-                <div></div>
-            </div>
-            <div>
-                @if (controller == "Barista")
-                {
-                    <a style="text-decoration: none; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 22px;
-                    border-radius: 14px; transition: all 0.3s;" asp-action="ProductList" asp-controller="Barista"
-                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Sản phẩm</a>
-                    <a style="text-decoration: none; margin-left: 30px; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 13px;
-                    border-radius: 14px; transition: all 0.3s;" asp-action="Signup" asp-controller="Barista"
-                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Thêm Barista</a>
-                }
-                else if (controller == "Home")
-                {
-                    <a style="text-decoration: none; color: #f8f8f8; background-color: rgba(45,41,40,0.5); padding: 10px 22px;
-                    border-radius: 14px; transition: all 0.3s;" asp-action="About" asp-controller="Home"
-                        onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Giới thiệu</a>
-                }
-            </div>
+            @if (ViewData["Header"] != null)
+            {
+                <div class="page-title-badge">
+                    <span>☕</span>
+                    <span>@ViewData["Header"]</span>
+                </div>
+            }
 
+            <div class="nav-links">
+                @if (isAuth)
+                {
+                    <a class="nav-btn @(currentPath.Contains("OrderList") || currentPath.Contains("OrderDetails") ? "active" : "")" 
+                       asp-action="OrderList" asp-controller="Barista">
+                        <span>📋</span> Danh sách đơn
+                    </a>
+                    <a class="nav-btn @(currentPath.Contains("Product") ? "active" : "")" 
+                       asp-action="ProductList" asp-controller="Barista">
+                        <span>☕</span> Menu món
+                    </a>
+                    <a class="nav-btn @(currentPath.Contains("Signup") ? "active" : "")" 
+                       asp-action="Signup" asp-controller="Barista">
+                        <span>👤</span> Thêm Barista
+                    </a>
+                    <a class="nav-btn nav-btn-logout" 
+                       asp-action="Logout" asp-controller="Barista"
+                       onclick="return confirm('Bạn có chắc chắn muốn đăng xuất khỏi Barista?');">
+                        <span>🚪</span> Đăng xuất
+                    </a>
+                }
+                else
+                {
+                    <a class="nav-btn @(currentPath == "/" || currentPath.Contains("Home/Index") ? "active" : "")" 
+                       asp-action="Index" asp-controller="Home">
+                        <span>🏠</span> Trang chủ
+                    </a>
+                    <a class="nav-btn @(currentPath.Contains("Order/Create") ? "active" : "")" 
+                       asp-action="Create" asp-controller="Order">
+                        <span>☕</span> Gọi món
+                    </a>
+                    <a class="nav-btn @(currentPath.Contains("Home/About") ? "active" : "")" 
+                       asp-action="About" asp-controller="Home">
+                        <span>ℹ️</span> Giới thiệu
+                    </a>
+                    <a class="nav-btn @(currentPath.Contains("Barista/Login") ? "active" : "")" 
+                       asp-action="Login" asp-controller="Barista">
+                        <span>🔑</span> Đăng nhập Barista
+                    </a>
+                }
+            </div>
         </nav>
     </header>
-    <div>
-        <main role="main">
-            @RenderBody()
-        </main>
+
+    <div class="notification-container">
+        @await Html.PartialAsync("_NotificationPartial")
     </div>
 
-    <footer>
-        &copy; 2026 — Nhóm 02 · Los Seymanos Emirhanos
-        &nbsp;|&nbsp; Giờ mở cửa: 07:00 – 22:00 hàng ngày
-        &nbsp;|&nbsp; Liên hệ: <a href="mailto:losseymanos.emirhanos@gmail.com">losseymanos.emirhanos@gmail.com</a>
-        &nbsp;|&nbsp; <a asp-controller="Home" asp-action="Privacy">Chính sách bảo mật</a>
+    <main role="main" class="main-content" style="flex: 1; width: 92%; max-width: 1360px; margin: 0 auto 50px auto;">
+        @RenderBody()
+    </main>
+
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div>
+                &copy; 2026 <strong>Los Seymanos Emirhanos Coffee</strong> &bull; Quán cà phê chuẩn phong cách Châu Âu
+            </div>
+            <div>
+                ⏰ Giờ mở cửa: <strong>07:00 – 22:00</strong> hàng ngày &nbsp;|&nbsp; 
+                📞 Hotline / Email: <a href="mailto:losseymanos.emirhanos@gmail.com">losseymanos.emirhanos@gmail.com</a> &nbsp;|&nbsp;
+                <a asp-controller="Home" asp-action="Privacy">Chính sách bảo mật</a>
+            </div>
+        </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -71,20 +110,3 @@
 </body>
 
 </html>
-
-<script>
-    @if (ViewBag.Title?.ToString() == "Thêm Barista")
-    {
-        @:var body = document.getElementById("body");
-        @:var image = document.createElement("img");
-        @:image.src = "../images/logo.png";
-        @:image.style.position = "absolute";
-        @:image.style.top = "20%";
-        @:image.style.right = "20%";
-        @:image.style.opacity = "0.1";
-        @:image.style.zIndex = "-1";
-
-        @:body.appendChild(image);
-
-    }
-</script>

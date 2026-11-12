@@ -1,25 +1,32 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
-    ViewBag.Title = "Lỗi";
+    ViewBag.Title = "Đã xảy ra lỗi";
+    ViewData["Header"] = "Thông Báo Lỗi";
 }
 
-<h1 class="text-danger">Lỗi.</h1>
-<h2 class="text-danger">Đã xảy ra lỗi khi xử lý yêu cầu của bạn.</h2>
+<div style="max-width: 650px; margin: 40px auto;">
+    <div class="modern-card" style="text-align: center; padding: 40px 30px;">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px auto;">
+            ⚠️
+        </div>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Mã yêu cầu:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+        <h2 style="font-size: 24px; color: var(--primary-espresso); margin-bottom: 12px;">Đã Xảy Ra Lỗi Hệ Thống</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; line-height: 1.6;">
+            Rất tiếc, đã có sự cố phát sinh trong quá trình xử lý yêu cầu của bạn. Vui lòng thử lại hoặc quay về trang chủ.
+        </p>
 
-<h3>Chế độ phát triển</h3>
-<p>
-    Chuyển sang môi trường <strong>Development</strong> sẽ hiển thị thông tin chi tiết hơn về lỗi đã xảy ra.
-</p>
-<p>
-    <strong>Không nên bật môi trường Development cho ứng dụng đã triển khai.</strong>
-    Việc này có thể làm lộ thông tin nhạy cảm của lỗi cho người dùng cuối.
-    Khi gỡ lỗi trên máy, bật môi trường <strong>Development</strong> bằng cách đặt biến môi trường <strong>ASPNETCORE_ENVIRONMENT</strong> thành <strong>Development</strong>
-    rồi khởi động lại ứng dụng.
-</p>
+        @if (Model.ShowRequestId)
+        {
+            <div style="background: #FAF7F2; padding: 12px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 24px; display: inline-block;">
+                <span style="font-size: 13px; color: var(--text-muted);">Mã yêu cầu (Request ID):</span> 
+                <code style="color: #A8202A; font-weight: 700;">@Model.RequestId</code>
+            </div>
+        }
+
+        <div>
+            <a class="btn-coffee-primary" asp-controller="Home" asp-action="Index">
+                ← Quay về Trang chủ
+            </a>
+        </div>
+    </div>
+</div>
