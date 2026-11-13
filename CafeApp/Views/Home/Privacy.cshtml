@@ -1,6 +1,39 @@
-﻿@{
+@{
     ViewBag.Title = "Chính sách quyền riêng tư";
+    ViewData["Header"] = "Chính Sách Bảo Mật & Quyền Riêng Tư";
 }
-<h1>@ViewBag.Title</h1>
 
-<p>Trang này mô tả chính sách quyền riêng tư của website.</p>
+<div style="max-width: 860px; margin: 20px auto;">
+    <div class="modern-card">
+        <h2 style="font-size: 24px; color: var(--primary-espresso); margin-bottom: 16px;">
+            🔒 Cam Kết Bảo Mật Thông Tin Khách Hàng
+        </h2>
+
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 18px;">
+            Tại <strong>Los Seymanos Emirhanos Coffee</strong>, sự riêng tư và bảo mật thông tin của quý khách hàng là ưu tiên hàng đầu của chúng tôi. 
+            Mọi dữ liệu phát sinh trong quá trình đặt món và sử dụng dịch vụ tại quán đều được quản lý an toàn và minh bạch.
+        </p>
+
+        <h3 style="font-size: 18px; color: var(--primary-mocha); margin-top: 24px; margin-bottom: 10px;">
+            1. Dữ liệu thu thập
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.7;">
+            Chúng tôi chỉ thu thập các thông tin tối thiểu cần thiết để phục vụ đơn hàng: tên khách hàng, số bàn và danh sách món ăn đã chọn. 
+            Thông tin này chỉ dùng cho mục đích pha chế và thanh toán tại quán trong phiên phục vụ hiện tại.
+        </p>
+
+        <h3 style="font-size: 18px; color: var(--primary-mocha); margin-top: 24px; margin-bottom: 10px;">
+            2. Quyền riêng tư của nhân viên Barista
+        </h3>
+        <p style="color: var(--text-secondary); line-height: 1.7;">
+            Thông tin tài khoản đăng nhập của Barista được bảo vệ an toàn qua phiên làm việc (Session) được mã hóa. Barista có toàn quyền đăng xuất 
+            khỏi hệ thống bất kỳ lúc nào để bảo vệ dữ liệu quán.
+        </p>
+
+        <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <a class="btn-coffee-secondary" asp-controller="Home" asp-action="Index">
+                ← Quay về Trang chủ
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,59 +1,84 @@
 @model IEnumerable<CafeApp.Models.Product>
 
 @{
-    ViewData["Header"] = "Danh sách sản phẩm";
+    ViewData["Header"] = "Quản Lý Thực Đơn Quán";
+    ViewBag.Title = "Danh sách sản phẩm";
 }
-@if (TempData["SuccessMessage"] != null)
-{
-    <div style="width: 60%; margin: 20px auto; padding: 15px;
-                background-color: #d4edda; color: #155724;
-                border-radius: 8px; text-align: center;">
-        @TempData["SuccessMessage"]
+
+<div class="modern-card" style="padding: 0; overflow: hidden;">
+    <div style="padding: 22px 28px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <h2 style="font-size: 20px; margin: 0; color: var(--primary-espresso);">Thực Đơn Đồ Uống & Tráng Miệng</h2>
+            <p style="margin: 4px 0 0 0; font-size: 13.5px; color: var(--text-secondary);">Quản lý danh sách các món phục vụ tại Los Seymanos Emirhanos</p>
+        </div>
+        <a asp-action="Create" asp-controller="Product" class="btn-coffee-primary">
+            <span>➕</span> Thêm sản phẩm mới
+        </a>
     </div>
-}
-<table style="margin: 0 auto; margin-top: 45px; font-size: 24px;
-display: flex; flex-direction: column; justify-content: space-between;
-width: 60%;">
-    <thead style="margin-bottom: 30px;">
-        <tr style="display: flex; justify-content: space-between; margin-right: 75px;">
-            <th>Hình ảnh</th>
-            <th>Tên</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model)
-        {
-            <tr style="display: flex; justify-content: space-between;">
-                <td style="width: 7%; height: 7%; margin-bottom: 30 px;">
-                    <img src="@(Url.Content(product.ImageSrc))" alt="@product.Name" style="width: 100%; height: 100%;">
-                </td>
-                <td>@product.Name</td>
-                <td>
 
-                    <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.ProductId" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #2E2928;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 32px;
-                        border-radius: 14px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-                        onmouseout="this.style.opacity=1">Sửa</a>
-
-                    <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.ProductId" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #b80f2b;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 13px;
-                        border-radius: 14px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-                        onmouseout="this.style.opacity=1">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<a asp-action="Create" asp-controller="Product" style="margin: 0 auto; text-align: center; text-decoration: none; font-size: 18px; margin-top: 45px; margin-bottom: 60px; display: block;
-color: #f8f8f8; background-color: rgba(45,41,40,0.5); width: 15%; padding: 10px; border-radius: 14px;
-transition: all 0.3s;" onmouseenter="this.style.opacity=0.9" onmouseout="this.style.opacity=1">Thêm sản phẩm mới</a>
+    @if (!Model.Any())
+    {
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 15px;">☕</div>
+            <h3 style="font-size: 20px; color: var(--text-secondary); margin-bottom: 8px;">Chưa Có Sản Phẩm Nào Trong Menu</h3>
+            <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto 20px auto;">Hãy thêm các món cà phê, đồ uống hoặc bánh ngọt đầu tiên để bắt đầu bán hàng.</p>
+            <a asp-action="Create" asp-controller="Product" class="btn-coffee-primary">
+                <span>➕</span> Thêm món ngay
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th style="width: 100px; text-align: center;">Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Mô tả chi tiết</th>
+                        <th style="width: 130px;">Giá bán</th>
+                        <th style="text-align: right; width: 170px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td style="text-align: center;">
+                                <img src="@(Url.Content(product.ImageSrc ?? "~/images/logo.png"))" 
+                                     alt="@product.Name" 
+                                     style="width: 58px; height: 58px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(61,38,27,0.1);" />
+                            </td>
+                            <td>
+                                <strong style="font-size: 16px; color: var(--primary-mocha); display: block;">@product.Name</strong>
+                                <span style="font-size: 12px; color: var(--text-muted);">Mã món: #@product.ProductId</span>
+                            </td>
+                            <td>
+                                <span style="color: var(--text-secondary); font-size: 14px;">
+                                    @(string.IsNullOrWhiteSpace(product.Details) ? "Chưa có mô tả cho món này." : product.Details)
+                                </span>
+                            </td>
+                            <td>
+                                <span style="font-size: 16px; font-weight: 700; color: #A8202A;">
+                                    $@product.Price
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: inline-flex; gap: 8px;">
+                                    <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.ProductId" 
+                                       class="btn-coffee-secondary" style="padding: 7px 14px; font-size: 13px;" title="Chỉnh sửa sản phẩm">
+                                        <span>✏️</span> Sửa
+                                    </a>
+                                    <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.ProductId" 
+                                       class="btn-coffee-danger" style="padding: 7px 12px; font-size: 13px;" title="Xóa sản phẩm">
+                                        <span>🗑️</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

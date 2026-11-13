@@ -4,36 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - LOS SEYMANOS EMIRHANOS</title>
+    <title>@(ViewBag.Title ?? "Los Seymanos Emirhanos") - LOS SEYMANOS EMIRHANOS</title>
     <link rel="icon" href="~/images/title_bar_icon.png" type="image/png">
-    <link rel="stylesheet" href="~/css/Layout2.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital@0;1&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/Layout2.css" asp-append-version="true">
 </head>
 
-<body id="body">
+<body id="body" class="layout2-body">
+    <div style="position: fixed; top: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; z-index: 9999;">
+        @await Html.PartialAsync("_NotificationPartial")
+    </div>
+
     @RenderBody()
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>
-
-<script>
-    @if (ViewBag.Title?.ToString() == "Đăng nhập")
-    {
-        @:var body = document.getElementById("body");
-        @:var image = document.createElement("img");
-        @:image.src = "../images/logo.png";
-        @:image.style.position = "absolute";
-        @:image.style.top = "50%";
-        @:image.style.left = "50%";
-        @:image.style.opacity = "0.1";
-        @:image.style.transform = "translate(-130%, -80%)";
-        @:image.style.zIndex = "-1";
-
-        @:body.appendChild(image);
-
-    }
-</script>

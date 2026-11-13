@@ -1,104 +1,98 @@
 @model Tuple<List<Product>, Order, Dictionary<int, int>>
 
 @{
-    ViewData["Header"] = "Bạn có thể cập nhật đơn hàng";
+    ViewData["Header"] = "Chỉnh Sửa Đơn Hàng #" + Model.Item2.OrderId;
+    ViewBag.Title = "Cập nhật đơn hàng";
 }
 
-<link rel="stylesheet" href="~/css/createProduct.css">
+<link rel="stylesheet" href="~/css/createProduct.css" asp-append-version="true">
 
 <div class="Wrapper">
+    <!-- Cột Trái: Lưới Sản Phẩm -->
     <div class="productsContainer">
         <div id="ProductsList">
-            @{
-                foreach (var product in Model.Item1)
-                {
-                    <div id="product" class="product" style="background-image: url('@(Url.Content(product.ImageSrc))');"
-                        data-product-id="@product.ProductId" data-product-name="@product.Name"
-                        data-product-price="@product.Price">
-                        <div class="productInfo">
-                            <p>@product.Name</p>
-                            <div style="position: relative;">
-                                <p style="z-index: 4; position: relative;" class="pricep">$ @product.Price</p>
-                                <div style="background-image: url(../images/price.svg); width: 130px; height: 100px; position: absolute; 
-                                        top: 45px; left: -100px; rotate: 230deg; transform-origin: top; background-repeat: no-repeat; 
-                                        background-position: center; background-size: cover;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter"></div>
-                        <div class="controlBag">
-                            <button
-                                onclick="addToBag(@product.ProductId, @Model.Item2.OrderId, '@product.Name', @product.Price);"
-                                class="bagButton" disabled>+</button>
-                            <input id="quantityInput_@product.ProductId"
-                                value="@((Model.Item3.ContainsKey(product.ProductId) ? Model.Item3[product.ProductId] : 0))"
-                                type="number" disabled>
-                            <button
-                                onclick="removeFromBag(@product.ProductId, @Model.Item2.OrderId, '@product.Name', @product.Price);"
-                                class="bagButton" disabled>-</button>
-                        </div>
+            @foreach (var product in Model.Item1)
+            {
+                var currentQty = Model.Item3.ContainsKey(product.ProductId) ? Model.Item3[product.ProductId] : 0;
+                <div id="product_@product.ProductId" class="product" 
+                     style="background-image: url('@(Url.Content(product.ImageSrc ?? "~/images/logo.png"))');"
+                     data-product-id="@product.ProductId" 
+                     data-product-name="@product.Name"
+                     data-product-price="@product.Price">
+                    <div class="productInfo">
+                        <p>@product.Name</p>
+                        <p class="pricep">$ @product.Price</p>
                     </div>
-                }
+                    <div class="filter"></div>
+                    <div class="controlBag">
+                        <button type="button"
+                                onclick="removeFromBag(@product.ProductId, @Model.Item2.OrderId, '@Html.Raw(product.Name)', @product.Price);"
+                                class="bagButton" disabled title="Giảm số lượng">-</button>
+                        <input id="quantityInput_@product.ProductId" value="@currentQty" type="number" readonly />
+                        <button type="button"
+                                onclick="addToBag(@product.ProductId, @Model.Item2.OrderId, '@Html.Raw(product.Name)', @product.Price);"
+                                class="bagButton" disabled title="Tăng số lượng">+</button>
+                    </div>
+                </div>
             }
         </div>
-
     </div>
 
+    <!-- Cột Phải: Form Xác Nhận Cập Nhật & Hóa Đơn -->
     <div class="right">
         <div id="OrderForm">
-            <form class="form" asp-controller="Order" asp-action="Create" method="post" onsubmit="return check()">
-                <div>
-                    <input asp-for="Item2.OrderId" type="hidden" name="orderId" value="@Model.Item2.OrderId">
+            <h3>Cập Nhật Đơn Hàng</h3>
+
+            <div id="orderValidationError" class="validation-error mb-3" style="display: none; padding: 10px; background: #FEE2E2; border-radius: 8px; border: 1px solid #FECACA;"></div>
+
+            <form class="form" asp-controller="Order" asp-action="Create" method="post" onsubmit="return checkOrderForm()">
+                @Html.AntiForgeryToken()
+                <input asp-for="Item2.OrderId" type="hidden" name="orderId" value="@Model.Item2.OrderId" />
+                <input asp-for="Item2.TotalPrice" type="hidden" id="totalPrice" name="totalPrice" value="@Model.Item2.TotalPrice" />
+
+                <div class="form-group-order">
+                    <label>Số bàn</label>
+                    <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" readonly style="background-color: #EFE9E0; cursor: not-allowed;" />
                 </div>
 
-                <div>
-                    <input class="loginInput" asp-for="Item2.TableNo" name="tableNo" required placeholder="Số bàn"
-                        readonly>
+                <div class="form-group-order">
+                    <label>Tên khách hàng</label>
+                    <input class="loginInput" asp-for="Item2.CustomerName" name="customerName" readonly style="background-color: #EFE9E0; cursor: not-allowed;" />
                 </div>
 
-                <div>
-                    <input class="loginInput" asp-for="Item2.CustomerName" name="customerName" required
-                        placeholder="Tên khách hàng" readonly>
+                <button class="orderButton" type="submit" style="margin-top: 14px;">
+                    <span>💾</span> Cập Nhật Đơn Hàng
+                </button>
+                <div style="text-align: center; margin-top: 10px;">
+                    <a asp-action="MyOrder" asp-route-id="@Model.Item2.OrderId" style="color: var(--text-secondary); font-size: 13.5px; text-decoration: none;">
+                        ← Quay lại chi tiết đơn
+                    </a>
                 </div>
-
-                <div>
-                    <input asp-for="Item2.TotalPrice" type="hidden" id="totalPrice" name="totalPrice"
-                        value="@Model.Item2.TotalPrice" readonly>
-                </div>
-
-                <button class="orderButton" type="submit">Cập nhật đơn hàng</button>
             </form>
         </div>
-        <br>
-        <br>
+
         @await Html.PartialAsync("../Shared/_OrderDetails")
     </div>
 </div>
 
-
 <script>
     setTimeout(function () {
         document.querySelectorAll('.bagButton').forEach(b => b.removeAttribute('disabled'));
-    }, 2000);
+    }, 500);
 
+    var addedProducts = [];
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var productElements = document.querySelectorAll('.product');
+    function hideEmptyBagNotice() {
+        var notice = document.getElementById("emptyBagNotice");
+        if (notice) notice.style.display = "none";
+    }
 
-        productElements.forEach(function (productElement) {
-            var productId = productElement.dataset.productId;
-            var productName = productElement.dataset.productName;
-            var productPrice = productElement.dataset.productPrice;
-            var quantityInput = document.getElementById('quantityInput_' + productId);
-            var quantity = quantityInput ? quantityInput.value : 0;
-
-            if (quantity != 0) {
-                for(var i=0; i<quantity; i++)
-                    printOrderDetails(productName, productPrice, quantity, productId);
-            }
-        });
-    });
-
+    function showEmptyBagNoticeIfNeeded() {
+        var notice = document.getElementById("emptyBagNotice");
+        if (notice && addedProducts.length === 0) {
+            notice.style.display = "block";
+        }
+    }
 
     function addToBag(productId, orderId, productName, productPrice) {
         $.ajax({
@@ -106,11 +100,11 @@
             url: "/Order/AddToBag",
             data: { productId: productId, orderId: orderId },
             success: function (response) {
-                printOrderDetails(productName, productPrice, response.quantity, productId)
+                printOrderDetails(productName, productPrice, response.quantity, productId);
                 updateQuantityInput(productId, response.quantity);
+                hideEmptyBagNotice();
             },
-            error: function (error) {
-            }
+            error: function () { }
         });
     }
 
@@ -123,8 +117,7 @@
                 printOrderDetails(productName, productPrice, response.quantity, productId);
                 updateQuantityInput(productId, response.quantity);
             },
-            error: function (error) {
-            }
+            error: function () { }
         });
     }
 
@@ -135,12 +128,10 @@
         }
     }
 
-    var addedProducts = [];
-
     function printOrderDetails(name, price, quantity, productId) {
-        var table = document.querySelector("#tbl");
+        var table = document.querySelector("#tbl tbody") || document.querySelector("#tbl");
 
-        if (!addedProducts.includes(name) && quantity != 0) {
+        if (!addedProducts.includes(name) && quantity > 0) {
             var tableRow = document.createElement("tr");
             tableRow.id = productId * 100;
             tableRow.classList.add("addedRow");
@@ -149,15 +140,15 @@
             nameElement.textContent = name;
             nameElement.classList.add("nameElement");
 
-            var priceElement = document.createElement("td");
-            priceElement.id = `${productId * 10}`;
-            priceElement.classList.add("price");
-            priceElement.textContent = `$ ${price}`;
-
             var quantityElement = document.createElement("td");
             quantityElement.id = `${productId}`;
             quantityElement.textContent = quantity + "x";
             quantityElement.classList.add("quantityElement");
+
+            var priceElement = document.createElement("td");
+            priceElement.id = `${productId * 10}`;
+            priceElement.classList.add("price");
+            priceElement.textContent = `$ ${price * quantity}`;
 
             tableRow.appendChild(nameElement);
             tableRow.appendChild(quantityElement);
@@ -166,12 +157,21 @@
 
             addedProducts.push(name);
         }
-        else {
+        else if (quantity > 0) {
             var quantityElement = document.getElementById(`${productId}`);
             var priceElement = document.getElementById(`${productId * 10}`);
 
-            quantityElement.textContent = quantity + "x";
-            priceElement.textContent = `$ ${price * quantity}`;
+            if (quantityElement) quantityElement.textContent = quantity + "x";
+            if (priceElement) priceElement.textContent = `$ ${price * quantity}`;
+        }
+        else if (quantity <= 0) {
+            var tableRow = document.getElementById(productId * 100);
+            if (tableRow) tableRow.remove();
+
+            var index = addedProducts.indexOf(name);
+            if (index !== -1) {
+                addedProducts.splice(index, 1);
+            }
         }
 
         var total = document.getElementById("total");
@@ -179,35 +179,50 @@
         var totalPrice = 0;
 
         allPrices.forEach(priceElement => {
-            var price = parseInt(priceElement.textContent.substring(2));
-
-            totalPrice += price;
-
-            if (price == 0) {
-                var tableRow = document.getElementById(`${productId}` * 100);
-                tableRow.remove();
-
-                var index = addedProducts.indexOf(name);
-
-                if (index !== -1) {
-                    addedProducts.splice(index, 1);
-                }
+            var text = priceElement.textContent.replace('$', '').trim();
+            var p = parseFloat(text);
+            if (!isNaN(p)) {
+                totalPrice += p;
             }
-        })
+        });
 
-        total.textContent = `$ ${totalPrice}`;
+        if (total) total.textContent = `$ ${totalPrice}`;
+        showEmptyBagNoticeIfNeeded();
     }
 
-    function check() {
+    function checkOrderForm() {
         var total = document.getElementById("total");
-        var totalPrice = parseFloat(total.textContent.replace('$', '').trim());
-        if (totalPrice == 0) {
-            alert("Vui lòng chọn món!");
+        var errorBox = document.getElementById("orderValidationError");
+        var totalPrice = parseFloat(total.textContent.replace('$', '').trim()) || 0;
+
+        if (totalPrice <= 0 || addedProducts.length === 0) {
+            if (errorBox) {
+                errorBox.textContent = "⚠️ Vui lòng chọn ít nhất một món trước khi cập nhật!";
+                errorBox.style.display = "block";
+            }
+            alert("Vui lòng chọn ít nhất một món trước khi cập nhật!");
             return false;
         }
-        else {
-            document.getElementById("totalPrice").setAttribute("value", totalPrice);
-            return true;
-        }
+
+        document.getElementById("totalPrice").value = totalPrice;
+        return true;
     }
+
+    // Load các món đã chọn trước đó
+    document.addEventListener('DOMContentLoaded', function () {
+        var productElements = document.querySelectorAll('.product');
+
+        productElements.forEach(function (productElement) {
+            var productId = productElement.dataset.productId;
+            var productName = productElement.dataset.productName;
+            var productPrice = parseFloat(productElement.dataset.productPrice);
+            var quantityInput = document.getElementById('quantityInput_' + productId);
+            var quantity = quantityInput ? parseInt(quantityInput.value) : 0;
+
+            if (quantity > 0) {
+                printOrderDetails(productName, productPrice, quantity, productId);
+                hideEmptyBagNotice();
+            }
+        });
+    });
 </script>

@@ -1,80 +1,59 @@
 @model CafeApp.Models.Product
 
 @{
-    ViewBag.Title = "Sửa sản phẩm";
-    ViewData["Header"] = "Sửa sản phẩm";
+    ViewBag.Title = "Chỉnh sửa sản phẩm";
+    ViewData["Header"] = "Chỉnh Sửa Món";
 }
 
-@using (Html.BeginForm())
-{
-    <div style="width: 22%; font-size: 24px; display: flex; flex-direction: column; margin: 0 auto;">
-    @Html.AntiForgeryToken()
+<div style="max-width: 600px; margin: 20px auto;">
+    <div class="modern-card">
+        <div style="margin-bottom: 24px; text-align: center;">
+            <div style="font-size: 38px; margin-bottom: 8px;">✏️</div>
+            <h2 style="font-size: 24px; margin-bottom: 6px;">Cập Nhật Thông Tin Sản Phẩm</h2>
+            <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">Mã sản phẩm: #@Model.ProductId</p>
+        </div>
 
-    @Html.HiddenFor(model => model.ProductId)
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ProductId" />
+            <div asp-validation-summary="ModelOnly" class="validation-error mb-3"></div>
 
-    <div style="display: flex; align-items: center; margin-bottom: 30px; justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Name">Tên:</label>
-        <input style="
-        background-color: #2e292827;
-        width: 13vw;
-        height: 5vh;
-        padding: 8px;
-        border: transparent;
-        border-radius: 10px;
-        transition: all 0.3s;" onfocus="this.style.transition='all 0.3s'; this.style.outline='1px dashed #2E2928';"
-            onblur="this.style.transition=''; this.style.outline='';" type="text" asp-for="@Model.Name"
-            value="@Model.Name">
+            <div style="margin-bottom: 18px;">
+                <label class="form-label-custom" asp-for="Name">Tên món đồ uống / bánh ngọt *</label>
+                <input class="form-control-custom" asp-for="Name" placeholder="Tên món" required />
+                <span asp-validation-for="Name" class="validation-error"></span>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label class="form-label-custom" asp-for="ImageSrc">Đường dẫn hình ảnh *</label>
+                <input class="form-control-custom" asp-for="ImageSrc" placeholder="/images/latte.jpg" required />
+                <span asp-validation-for="ImageSrc" class="validation-error"></span>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label class="form-label-custom" asp-for="Details">Mô tả món</label>
+                <textarea class="form-control-custom" asp-for="Details" rows="3" placeholder="Mô tả hương vị..."></textarea>
+                <span asp-validation-for="Details" class="validation-error"></span>
+            </div>
+
+            <div style="margin-bottom: 26px;">
+                <label class="form-label-custom" asp-for="Price">Giá bán ($) *</label>
+                <input class="form-control-custom" asp-for="Price" type="number" step="1" min="1" placeholder="35" required />
+                <span asp-validation-for="Price" class="validation-error"></span>
+            </div>
+
+            <div style="display: flex; gap: 14px; justify-content: flex-end;">
+                <a asp-action="ProductList" asp-controller="Barista" class="btn-coffee-secondary">
+                    Hủy bỏ
+                </a>
+                <button type="submit" class="btn-coffee-primary">
+                    <span>💾</span> Lưu thay đổi
+                </button>
+            </div>
+        </form>
     </div>
-
-    <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.ImageSrc">Đường dẫn ảnh:</label>
-        <input style="
-        background-color: #2e292827;
-        width: 13vw;
-        height: 5vh;
-        padding: 8px;
-        border: transparent;
-        border-radius: 10px;
-        transition: all 0.3s;" onfocus="this.style.transition='all 0.3s'; this.style.outline='1px dashed #2E2928';"
-            onblur="this.style.transition=''; this.style.outline='';" type="text" asp-for="@Model.ImageSrc"
-            value="@Model.ImageSrc">
-
-    </div>
-
-    <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Details">Mô tả:</label>
-        <input style="
-        background-color: #2e292827;
-        width: 13vw;
-        height: 5vh;
-        padding: 8px;
-        border: transparent;
-        border-radius: 10px;
-        transition: all 0.3s;" onfocus="this.style.transition='all 0.3s'; this.style.outline='1px dashed #2E2928';"
-            onblur="this.style.transition=''; this.style.outline='';" type="text" asp-for="@Model.Details"
-            value="@Model.Details">
-
-    </div>
-
-
-    <div style="display: flex; align-items: center; margin-bottom: 30px;  justify-content: space-between;">
-        <label style="margin-right: 45px; font-weight: bold;" asp-for="@Model.Price">Giá:</label>
-        <input style="
-        background-color: #2e292827;
-        width: 13vw;
-        height: 5vh;
-        padding: 8px;
-        border: transparent;
-        border-radius: 10px;
-        transition: all 0.3s;" onfocus="this.style.transition='all 0.3s'; this.style.outline='1px dashed #2E2928';"
-            onblur="this.style.transition=''; this.style.outline='';" type="text" asp-for="@Model.Price"
-            value="@Model.Price">
-
-    </div>
-
-    <button style="width: 50%; margin: 0 auto; margin-top: 45px; border-radius: 14px; border: none; background-color: #b80f2b;
-    color: #f8f8f8; padding: 12px; transition: all 0.3s;" type="submit" onmouseenter="this.style.opacity=0.8"
-        onmouseleave="this.style.opacity=1" type="submit">Lưu</button>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-<div style="height: 15vh;"></div>

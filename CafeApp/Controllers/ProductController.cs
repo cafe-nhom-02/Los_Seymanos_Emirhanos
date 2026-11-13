@@ -18,30 +18,47 @@ namespace CafeApp.Controllers
         [Route("Product/Create")]
         public IActionResult Create()
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("Product/Create")]
         public async Task<IActionResult> Create([Bind("ProductId,Name,ImageSrc,Details,Price")] Product product)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = Messages.ProductCreated;
+                TempData["Success Message"] = Messages.ProductCreated;
                 return RedirectToAction("ProductList", "Barista");
             }
 
             return View(product);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -56,11 +73,16 @@ namespace CafeApp.Controllers
             return View(product);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,ImageSrc,Details,Price")] Product product)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             if (id != product.ProductId)
             {
                 return NotFound();
@@ -85,6 +107,7 @@ namespace CafeApp.Controllers
                     }
                 }
                 TempData["SuccessMessage"] = Messages.ProductUpdated;
+                TempData["Success Message"] = Messages.ProductUpdated;
                 return RedirectToAction("ProductList", "Barista");
             }
             return View(product);
@@ -98,6 +121,12 @@ namespace CafeApp.Controllers
         // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -118,12 +147,19 @@ namespace CafeApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            var isAuthenticated = HttpContext.Session.GetString("IsAuth");
+            if (!Convert.ToBoolean(isAuthenticated))
+            {
+                return RedirectToAction("Login", "Barista");
+            }
+
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = Messages.ProductDeleted;
+                TempData["Success Message"] = Messages.ProductDeleted;
             }
             return RedirectToAction("ProductList", "Barista");
         }

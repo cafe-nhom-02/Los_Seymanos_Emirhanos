@@ -1,37 +1,36 @@
 @model CafeApp.Models.Order
 
 @{
-    ViewData["Header"] = "Xóa";
+    ViewData["Header"] = "Xác Nhận Xóa Đơn Hàng";
+    ViewBag.Title = "Xác nhận xóa đơn";
 }
 
+<div style="max-width: 520px; margin: 40px auto;">
+    <div class="modern-card" style="text-align: center; padding: 40px 30px;">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px auto;">
+            ⚠️
+        </div>
 
-<div
-    style="display: flex; flex-direction: column; font-size: 24px; width: 100%; align-items: center; justify-content: center;">
-    <h1 style="margin-bottom: 45px;">
-        Bạn có muốn xóa đơn hàng của @Model.CustomerName không?
-    </h1>
+        <h2 style="font-size: 22px; margin-bottom: 12px; color: var(--primary-espresso);">
+            Xác nhận xóa đơn hàng #@Model.OrderId?
+        </h2>
 
-    <form asp-action="Delete" method="post">
-        <input type="hidden" name="orderId" asp-for="@Model.OrderId">
-        <button type="submit" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #b80f2b;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 30px;
-                        border-radius: 14px;
-                        border: none;
-                        font-size: 24px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-            onmouseout="this.style.opacity=1">Có</button>
-        <a href="/Barista/OrderList"><button class="btn btn-primary" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #2E2928;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 33px;
-                        font-size: 24px;
-                        border-radius: 14px; margin-left: 15px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
-                type="button">Không</button></a>
-    </form>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; line-height: 1.5;">
+            Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng của quý khách <strong>@(Model.CustomerName ?? "Khách lẻ")</strong> 
+            tại <strong>Bàn @(Model.TableNo?.ToString() ?? "-")</strong> với tổng số tiền <strong>$@Model.TotalPrice</strong>?
+            Hành động này không thể hoàn tác.
+        </p>
+
+        <form asp-action="Delete" method="post" style="display: flex; gap: 14px; justify-content: center;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="orderId" asp-for="@Model.OrderId" />
+            
+            <a asp-action="OrderList" class="btn-coffee-secondary" style="flex: 1; max-width: 160px;">
+                Không, giữ lại
+            </a>
+            <button type="submit" class="btn-coffee-danger" style="flex: 1; max-width: 160px;">
+                <span>🗑️</span> Có, xóa đơn
+            </button>
+        </form>
+    </div>
 </div>
-<div style="height: 15vh;"></div>

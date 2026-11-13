@@ -1,21 +1,42 @@
-﻿@{
-    ViewBag.Title = "Chào mừng";
+@{
+    ViewBag.Title = "Trang chủ";
     Layout = "_Layout2";
 }
 
-<div class="wrapper">
-    <div class="left-intro">
-        <h1 class="welcomeHeader">Chào mừng đến với</h1>
-        <img class="cup" src="/images/logo.png" alt="Logo">
+<div class="welcome-container">
+    <div class="welcome-logo-box">
+        <img src="~/images/logo.png" alt="Los Seymanos Emirhanos Logo" class="welcome-logo" />
     </div>
 
-    <div class="right-intro">
-        <h2>Bạn là khách hàng hay barista?</h2>
+    <div class="welcome-subtitle">Hương vị cà phê nguyên bản</div>
+    <h1 class="welcome-title">LOS SEYMANOS EMIRHANOS</h1>
+    <p class="welcome-desc">
+        Chào mừng quý khách đến với không gian cà phê ấm cúng. Vui lòng lựa chọn chế độ truy cập bên dưới để bắt đầu trải nghiệm:
+    </p>
 
-        <div class="linkContainer">
-            <a class="commonBtn managerBtn" asp-controller="Barista" asp-action="Login">Barista</a>
-            <a class="commonBtn customerBtn" asp-controller="Order" asp-action="Create">Khách hàng</a>
+    <div class="role-cards-container">
+        <!-- Khách hàng -->
+        <div class="role-card">
+            <div>
+                <span class="role-icon">☕</span>
+                <h3>Dành Cho Khách Hàng</h3>
+                <p>Khám phá menu đồ uống, tráng miệng thơm ngon và gọi món trực tuyến ngay tại bàn một cách tiện lợi.</p>
+            </div>
+            <a class="role-btn-customer" asp-controller="Order" asp-action="Create">
+                Đặt món ngay &rarr;
+            </a>
         </div>
 
+        <!-- Barista -->
+        <div class="role-card">
+            <div>
+                <span class="role-icon">👨‍🍳</span>
+                <h3>Khu Vực Barista</h3>
+                <p>Kênh dành cho nhân viên pha chế: tiếp nhận đơn hàng, cập nhật trạng thái phục vụ và quản lý thực đơn.</p>
+            </div>
+            <a class="role-btn-barista" asp-controller="Barista" asp-action="Login">
+                Đăng nhập Barista &rarr;
+            </a>
+        </div>
     </div>
 </div>

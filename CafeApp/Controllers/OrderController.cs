@@ -1,10 +1,11 @@
 using CafeApp.Data;
 using CafeApp.Models;
+using CafeApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace CafeApp.Controllers
 {
-
     public class OrderController : Controller
     {
         private readonly DataContext _context;
@@ -16,18 +17,15 @@ namespace CafeApp.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateDBBefore(int orderId)
         {
-
             var existingOrderProductList = await _context.OrderProducts.Where(op => op.OrderId == orderId).ToListAsync();
 
             if (existingOrderProductList != null)
                 _context.OrderProducts.RemoveRange(existingOrderProductList);
 
-
             var order = await _context.Orders.FindAsync(orderId);
 
             if (order != null)
                 _context.Orders.Remove(order);
-
 
             await _context.SaveChangesAsync();
 
@@ -37,7 +35,6 @@ namespace CafeApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToBag(int productId, int orderId)
         {
-
             var existingOrderProduct = await _context.OrderProducts.FirstOrDefaultAsync(op => op.OrderId == orderId && op.ProductId == productId);
 
             if (existingOrderProduct != null)
@@ -69,12 +66,10 @@ namespace CafeApp.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromBag(int productId, int orderId)
         {
-
             var existingOrderProduct = await _context.OrderProducts.FirstOrDefaultAsync(op => op.OrderId == orderId && op.ProductId == productId);
 
             if (existingOrderProduct != null)
             {
-
                 if (existingOrderProduct.Quantity > 0)
                 {
                     existingOrderProduct.Quantity--;
@@ -94,7 +89,6 @@ namespace CafeApp.Controllers
 
             return Json(new { success = true, quantity = 0 });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Create(int? orderId, string searchString, string sortOrder)
@@ -128,22 +122,26 @@ namespace CafeApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Gửi từ khóa tìm kiếm ra ViewBag để giữ lại giá trị trên ô input ở giao diện
             ViewBag.SearchString = searchString;
             ViewBag.SortOrder = sortOrder;
 
             var tuple = Tuple.Create(sortedProducts, order);
             return View(tuple);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(int orderId, int tableNo, string customerName, decimal totalPrice)
         {
             var (isValid, errorMessage) = CafeApp.Services.OrderValidator.ValidateOrderInput(tableNo, customerName);
             if (!isValid)
             {
-            return Json(new { success = false, message = errorMessage });
+                return Json(new { success = false, message = errorMessage });
             }
-            // ========================================================
+
+            if (totalPrice <= 0)
+            {
+                return Json(new { success = false, message = Messages.PleaseSelectProduct });
+            }
 
             if (ModelState.IsValid)
             {
@@ -152,43 +150,45 @@ namespace CafeApp.Controllers
                 if (order != null)
                 {
                     order.TableNo = tableNo;
-                    order.CustomerName = customerName;
+                    order.CustomerName = customerName?.Trim();
                     order.OrderDate = DateTime.Now;
                     order.TotalPrice = totalPrice;
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
+                    return Json(new { success = false, message = Messages.OrderNotFound });
                 }
 
                 await _context.SaveChangesAsync();
-
                 _context.ClearNullOrders();
 
                 return RedirectToAction("MyOrder", new { id = orderId });
             }
             else
             {
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ!" });
+                return Json(new { success = false, message = Messages.InvalidOrderData });
             }
-
         }
 
         [HttpGet]
         public async Task<IActionResult> MyOrder(int id)
         {
-
             var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = Messages.OrderNotFound;
+                return RedirectToAction("Create");
+            }
 
-            List<OrderProduct> orderProducts = _context.OrderProducts
-            .Where(op => op.OrderId == id)
-            .ToList();
+            List<OrderProduct> orderProducts = await _context.OrderProducts
+                .Where(op => op.OrderId == id)
+                .ToListAsync();
 
             List<int> productIds = orderProducts.Select(op => op.ProductId).ToList();
 
-            List<Product> products = _context.Products
+            List<Product> products = await _context.Products
                 .Where(p => productIds.Contains(p.ProductId))
-                .ToList();
+                .ToListAsync();
 
             Dictionary<int, int> productIdQuantityPairs = orderProducts
                 .ToDictionary(op => op.ProductId, op => op.Quantity);
@@ -197,23 +197,24 @@ namespace CafeApp.Controllers
             return View(tuple);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            List<OrderProduct> orderProducts = _context.OrderProducts
-           .Where(op => op.OrderId == id)
-           .ToList();
+            if (id == null) return NotFound();
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+
+            List<OrderProduct> orderProducts = await _context.OrderProducts
+               .Where(op => op.OrderId == id)
+               .ToListAsync();
 
             List<Product> products = await _context.Products.ToListAsync();
-            var order = await _context.Orders.FindAsync(id);
 
             Dictionary<int, int> productIdQuantityPairs = orderProducts
                 .ToDictionary(op => op.ProductId, op => op.Quantity);
 
             var tuple = Tuple.Create(products, order, productIdQuantityPairs);
-
-
             return View(tuple);
         }
 
@@ -225,20 +226,12 @@ namespace CafeApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(model);
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                return RedirectToAction("MyOrder");
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("MyOrder", new { id = model.OrderId });
             }
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateOrderStatus(int orderId, bool isServed, bool isPaid)
@@ -249,33 +242,33 @@ namespace CafeApp.Controllers
                 return NotFound();
             }
 
-
             order.IsServed = isServed;
             order.IsPaid = isPaid;
-
 
             _context.Update(order);
             await _context.SaveChangesAsync();
 
-
+            TempData["SuccessMessage"] = Messages.OrderStatusUpdated;
             return RedirectToAction("OrderList", "Barista");
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
+            if (id == null) return NotFound();
+
             var order = await _context.Orders.FindAsync(id);
+            if (order == null) return NotFound();
+
             return View(order);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int orderId)
         {
-
             List<OrderProduct> orderProducts = await _context.OrderProducts
-            .Where(op => op.OrderId == orderId)
-            .ToListAsync();
+                .Where(op => op.OrderId == orderId)
+                .ToListAsync();
             _context.OrderProducts.RemoveRange(orderProducts);
 
             var order = await _context.Orders.FindAsync(orderId);

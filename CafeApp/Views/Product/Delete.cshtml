@@ -1,36 +1,40 @@
 @model CafeApp.Models.Product
 
 @{
-    ViewData["Header"] = "Xóa";
+    ViewData["Header"] = "Xác Nhận Xóa Sản Phẩm";
+    ViewBag.Title = "Xác nhận xóa món";
 }
 
-<div
-    style="display: flex; flex-direction: column; font-size: 24px; width: 100%; align-items: center; justify-content: center;">
-    <h1 style="margin-bottom: 45px;">
-        Bạn có muốn xóa sản phẩm @Model.Name không?
-    </h1>
+<div style="max-width: 520px; margin: 40px auto;">
+    <div class="modern-card" style="text-align: center; padding: 40px 30px;">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px auto;">
+            🗑️
+        </div>
 
-    <form asp-action="Delete" method="post">
-        <input type="hidden" name="id" asp-for="@Model.ProductId">
-        <button type="submit" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #b80f2b;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 30px;
-                        border-radius: 14px;
-                        border: none;
-                        font-size: 24px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8"
-            onmouseout="this.style.opacity=1">Có</button>
-        <a href="/Barista/ProductList"><button class="btn btn-primary" style="text-decoration: none;
-                        color: #F8F8F8;
-                        background-color: #2E2928;
-                        font-family: 'Raleway', sans-serif;
-                        padding: 10px 33px;
-                        font-size: 24px;
-                        border-radius: 14px; margin-left: 15px;
-                        transition: all 0.3s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
-                type="button">Không</button></a>
-    </form>
+        <h2 style="font-size: 22px; margin-bottom: 12px; color: var(--primary-espresso);">
+            Xóa món "@Model.Name"?
+        </h2>
+
+        <div style="margin: 20px 0;">
+            <img src="@(Url.Content(Model.ImageSrc ?? "~/images/logo.png"))" alt="@Model.Name" 
+                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 16px; box-shadow: var(--shadow-soft); margin-bottom: 12px;" />
+            <div style="font-size: 18px; font-weight: 700; color: #A8202A;">$@Model.Price</div>
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; line-height: 1.5;">
+            Bạn có chắc chắn muốn xóa sản phẩm này khỏi menu của quán? Món này sẽ không còn hiển thị cho khách hàng đặt nữa.
+        </p>
+
+        <form asp-action="Delete" method="post" style="display: flex; gap: 14px; justify-content: center;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" asp-for="ProductId" />
+            
+            <a asp-action="ProductList" asp-controller="Barista" class="btn-coffee-secondary" style="flex: 1; max-width: 160px;">
+                Không, giữ lại
+            </a>
+            <button type="submit" class="btn-coffee-danger" style="flex: 1; max-width: 160px;">
+                <span>🗑️</span> Có, xóa món
+            </button>
+        </form>
+    </div>
 </div>
-<div style="height: 15vh;"></div>

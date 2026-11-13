@@ -1,42 +1,48 @@
 @model WebProject.Models.Barista
 
 @{
-    ViewData["Header"] = "Thêm Barista";
+    ViewData["Header"] = "Thêm Barista Mới";
     ViewBag.Title = "Thêm Barista";
 }
-<link rel="stylesheet" href="~/css/signup.css">
 
-<div class="signup-container">
-    <div class="wrapper">
-
-        <div class="error-message">
-            <div id="errorMessage">@TempData["Error Message"]</div>
+<div style="max-width: 480px; margin: 30px auto;">
+    <div class="modern-card">
+        <div style="text-align: center; margin-bottom: 25px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">👤</div>
+            <h2 style="font-size: 24px; margin-bottom: 6px;">Tạo Tài Khoản Barista</h2>
+            <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">
+                Cấp tài khoản mới cho nhân viên pha chế để quản lý đơn hàng và thực đơn quán.
+            </p>
         </div>
 
-        <form asp-action="Signup" method="post" class="loginForm">
-            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
-            <div class="form-group">
-                <input class="loginInput" asp-for="Email" placeholder="Email" required/>
-                <span asp-validation-for="Email" class="text-danger"></span>
+        <form asp-action="Signup" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-error mb-3"></div>
+
+            <div style="margin-bottom: 20px;">
+                <label class="form-label-custom" asp-for="Email">Địa chỉ Email nhân viên *</label>
+                <input class="form-control-custom" asp-for="Email" type="email" placeholder="ví dụ: barista2@gmail.com" required />
+                <span asp-validation-for="Email" class="validation-error"></span>
             </div>
-            <div class="form-group">
-                <input class="loginInput" asp-for="Password" type="password" placeholder="Mật khẩu" required/>
-                <span asp-validation-for="Password" class="text-danger"></span>
+
+            <div style="margin-bottom: 25px;">
+                <label class="form-label-custom" asp-for="Password">Mật khẩu *</label>
+                <input class="form-control-custom" asp-for="Password" type="password" placeholder="Tối thiểu 3 ký tự" required />
+                <span asp-validation-for="Password" class="validation-error"></span>
             </div>
-            <button type="submit" class="loginBtn">Thêm</button>
+
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button type="submit" class="btn-coffee-primary" style="flex: 1;">
+                    <span>✓</span> Thêm Barista
+                </button>
+                <a asp-action="OrderList" class="btn-coffee-secondary">
+                    Hủy
+                </a>
+            </div>
         </form>
     </div>
 </div>
-<div style="height: 15vh;"></div>
 
-<script>
-    setTimeout(function () {
-        var errorMessage = document.getElementById("errorMessage");
-
-        if (errorMessage) {
-            setTimeout(function () {
-                errorMessage.style.opacity = '0';
-            }, 1000);
-        }
-    }, 5000);
-</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
