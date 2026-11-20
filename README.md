@@ -106,12 +106,13 @@ Chi tiết xem [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Các ảnh dưới đây chụp từ bản gốc của dự án.
 
-![Ảnh 1](screenshots/ss1.png)
-![Ảnh 2](screenshots/ss2.png)
-![Ảnh 3](screenshots/ss3.png)
-![Ảnh 4](screenshots/ss4.png)
-![Ảnh 5](screenshots/ss5.png)
-![Ảnh 6](screenshots/ss6.png)
+![Ảnh 1](screenshots/1.png)
+![Ảnh 2](screenshots/2.png)
+![Ảnh 3](screenshots/3.png)
+![Ảnh 4](screenshots/4.png)
+![Ảnh 5](screenshots/5.png)
+![Ảnh 6](screenshots/6.png)
+![Ảnh 7](screenshots/7.png)
 
 ## Giấy phép
 
